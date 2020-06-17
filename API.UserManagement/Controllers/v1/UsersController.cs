@@ -1,5 +1,8 @@
 ﻿using API.LoginAndRegister.Contracts.v1;
+using API.UserManagement.Contracts.v1.Requests;
+using API.UserManagement.Contracts.v1.Responses;
 using API.UserManagement.Domain;
+using API.UserManagement.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -10,23 +13,39 @@ namespace API.UserManagement.Controllers.v1
 {
     public class UsersController : Controller
     {
-        List<User> _users = new List<User>();
+        private readonly IUsersService _usersService;
+
+        public UsersController(IUsersService usersService)
+        {
+            _usersService = usersService;
+        }
+
 
         [HttpGet(ApiRoutes.Users.GetAll)]
         public IActionResult GetAll()
         {
-            return Ok(new { Name = "Pau" });
+            return Ok(_usersService.GetUsers());
+        }
+
+        [HttpGet(ApiRoutes.Users.Get)]
+        public IActionResult Get([FromRoute] Guid userId)
+        {
+            var user = _usersService.GetUserById(userId);
+            if ( user == null) return NotFound();
+            else return Ok(user);
         }
 
         [HttpPost(ApiRoutes.Users.Create)]
-        public IActionResult Create([FromBody] User user)
-        {            
-            _users.Add(user);
+        public IActionResult Create([FromBody] CreatePostRequest user)
+        {
+            User _user = new User { Name = user.Name, Id = Guid.NewGuid() };
+            //_users.Add(_user);
 
             var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
-            var locationUri = baseUrl + "/" + ApiRoutes.Users.Get.Replace("{userId}", user.Id.ToString());
+            var locationUri = baseUrl + "/" + ApiRoutes.Users.Get.Replace("{userId}", _user.Id.ToString());
 
-            return Created(locationUri, user);
+            var response = new PostResponse { Id = _user.Id, Name = _user.Name };
+            return Created(locationUri, response);
         }
     }
 }

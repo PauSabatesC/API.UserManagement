@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using API.LoginAndRegister.Options;
+using API.UserManagement.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -25,10 +26,13 @@ namespace API.LoginAndRegister
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            
             services.AddSwaggerGen( x => 
             {
                 x.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "API.LoginAndRegister", Version = "v1" });
             });
+
+            services.AddSingleton<IUsersService,UserService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
