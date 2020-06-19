@@ -16,6 +16,8 @@ namespace API.LoginAndRegister.Contracts.v1
             public const string GetAll = Base + "/users";
             public const string Get = Base + "/users/{userId}";
             public const string Create = Base + "/users";
+            public const string Update = Base + "/users/{userId}";
+            public const string Delete = Base + "/users/{userId}";
         }
     }
 }

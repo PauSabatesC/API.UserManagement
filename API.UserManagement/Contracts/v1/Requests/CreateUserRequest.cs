@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace API.UserManagement.Contracts.v1.Requests
 {
-    public class CreatePostRequest
+    public class CreateUserRequest
     {
         public string Name { get; set; }
     }

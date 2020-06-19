@@ -32,7 +32,7 @@ namespace API.LoginAndRegister
                 x.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "API.LoginAndRegister", Version = "v1" });
             });
 
-            services.AddSingleton<IUsersService,UserService>();
+            services.AddSingleton<IUsersService,UsersService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -8,7 +8,9 @@ namespace API.UserManagement.Services
 {
     public interface IUsersService
     {
-        List<User> GetUsers();
-        User GetUserById(Guid id);
+        Task<IEnumerable<User>> GetUsers();
+        Task<User> GetUserById(Guid id);
+        Task<bool> UpdateUser(User user);
+        Task<bool> DeleteUser(Guid id);
     }
 }
