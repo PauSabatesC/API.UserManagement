@@ -7,6 +7,6 @@ namespace API.UserManagement.Contracts.v1.Requests
 {
     public class UpdateUserRequest
     {
-        public string Name { get; set; }
+        public string UserName { get; set; }
     }
 }

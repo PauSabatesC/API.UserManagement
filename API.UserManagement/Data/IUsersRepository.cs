@@ -7,11 +7,11 @@ namespace API.UserManagement.Data
 {
     public interface IUsersRepository
     {
-        Task<bool> CreateUser();
+        Task<User> CreateUser(User user);
         Task<IEnumerable<User>> ReadUsers();
-        Task<User> ReadUser(Guid id);
+        Task<User> ReadUser(string id);
         Task<bool> UpdateUser(User user);
-        Task<bool> DeleteUser(Guid id);
+        Task<bool> DeleteUser(string id);
 
     }
 }

@@ -16,7 +16,7 @@ namespace API.UserManagement.Services
             _usersRepository = usersRepository;
         }
 
-        public async Task<User> GetUserById(Guid id)
+        public async Task<User> GetUserById(string id)
         {
             return await _usersRepository.ReadUser(id);
         }
@@ -28,15 +28,20 @@ namespace API.UserManagement.Services
 
         public async Task<bool> UpdateUser(User user)
         {
-            if(user.Id == null) throw new ArgumentNullException("User id cannot be null");
-            return await _usersRepository.UpdateUser(user)
-
+            //if(user.Id == null) throw new ArgumentNullException("User id cannot be null");
+            return await _usersRepository.UpdateUser(user);
         }
 
-        public async Task<bool> DeleteUser(Guid id)
+        public async Task<bool> DeleteUser(string id)
         {
-            if(id == null) throw new ArgumentNullException("User id cannot be null");
+            //if(id == null) throw new ArgumentNullException("User id cannot be null");
             return await _usersRepository.DeleteUser(id);
+        }
+
+        public async Task<User> CreateUser(User user)
+        {
+            await _usersRepository.CreateUser(user);
+            return user;
         }
     }
 }

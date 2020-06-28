@@ -7,8 +7,8 @@ namespace API.UserManagement.Contracts.v1.Responses
 {
     public class PostResponse
     {
-        public Guid Id { get; set; }
-        public string Name { get; set; }
+        public string Id { get; set; }
+        public string UserName { get; set; }
 
     }
 }

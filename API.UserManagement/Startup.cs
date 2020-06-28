@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using API.LoginAndRegister.Options;
+using API.UserManagement.Data;
+using API.UserManagement.Domain;
 using API.UserManagement.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -32,7 +36,16 @@ namespace API.LoginAndRegister
                 x.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "API.LoginAndRegister", Version = "v1" });
             });
 
-            services.AddSingleton<IUsersService,UsersService>();
+
+            services.AddDbContext<DataContext>(dbContextOption => dbContextOption.UseSqlServer(Configuration.GetConnectionString("SQLServerDb")));
+            services.AddIdentityCore<User>()
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<DataContext>();
+
+
+            services.AddScoped<IUsersService,UsersService>();
+            services.AddTransient<IUsersRepository, UserEFRepository>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

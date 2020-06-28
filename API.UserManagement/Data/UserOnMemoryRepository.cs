@@ -15,16 +15,18 @@ namespace API.UserManagement.Data
         {
             for (int i = 0; i < 5; i++)
             {
-                _users.Add(new User { Id = Guid.NewGuid(), Name = "user-" + i });
+                _users.Add(new User { Id = Guid.NewGuid().ToString(), UserName = "user-" + i });
             }
         }
 
-        public Task<bool> CreateUser()
+        public async Task<User> CreateUser(User user)
         {
-            throw new NotImplementedException();
+            user.Id = new Guid().ToString();
+            await Task.Run(() => _users.Add(user));
+            return user;
         }
 
-        public async Task<bool> DeleteUser(Guid id)
+        public async Task<bool> DeleteUser(string id)
         {
             int index = await Task.Run(() => _users.FindIndex(x => x.Id == id));
             if(index == -1) return false;
@@ -35,7 +37,7 @@ namespace API.UserManagement.Data
             }
         }
 
-        public async Task<User> ReadUser(Guid id)
+        public async Task<User> ReadUser(string id)
         {
             return await Task.Run(() => 
                 _users.FirstOrDefault<User>(x => x.Id == id)

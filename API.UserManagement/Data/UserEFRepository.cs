@@ -15,29 +15,42 @@ namespace API.UserManagement.Data
             _dataContext = dataContext;
         }
 
-        public Task<bool> CreateUser()
+        public async Task<User> CreateUser(User user)
         {
-            throw new NotImplementedException();
+            await _dataContext.Users.AddAsync(user);
+            var changes = await _dataContext.SaveChangesAsync();
+            if (changes > 0) return await ReadUser(user.Id);
+            else throw new ApplicationException($"Cannot add user: {user.Id} to database");
         }
 
-        public Task<bool> DeleteUser()
+        public async Task<bool> DeleteUser(string id)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<User> ReadUser(Guid id)
-        {
+            var user = ReadUser(id);
             
+            if (user == null) return false;
+
+            _dataContext.Users.Remove(user.Result);
+            var changes = await _dataContext.SaveChangesAsync();
+            return changes > 0;
+        }
+
+        public async Task<User> ReadUser(string id)
+        {
+            var queryable = _dataContext._users.AsQueryable();
+            return await queryable.SingleOrDefaultAsync<User>(x => x.Id == id);
         }
 
         public async Task<IEnumerable<User>> ReadUsers()
         {
-            return await _dataContext.Users.ToArrayAsync();
+            var queryable = _dataContext._users.AsQueryable();
+            return await queryable.ToListAsync();
         }
 
-        public Task<bool> UpdateUser(User user)
+        public async Task<bool> UpdateUser(User user)
         {
-            throw new NotImplementedException();
+            _dataContext.Users.Update(user);
+            var changes = await _dataContext.SaveChangesAsync();
+            return changes > 0;
         }
     }
 }

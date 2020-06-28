@@ -22,46 +22,50 @@ namespace API.UserManagement.Controllers.v1
 
 
         [HttpGet(ApiRoutes.Users.GetAll)]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            return Ok(_usersService.GetUsers());
+            var users = await _usersService.GetUsers();
+            return Ok(users);
         }
 
         [HttpGet(ApiRoutes.Users.Get)]
-        public IActionResult Get([FromRoute] Guid userId)
+        public async Task<IActionResult> Get([FromRoute] string userId)
         {
-            var user = _usersService.GetUserById(userId);
+            var user = await _usersService.GetUserById(userId);
             if ( user == null) return NotFound();
             else return Ok(user);
         }
 
         [HttpPost(ApiRoutes.Users.Create)]
-        public IActionResult Create([FromBody] CreateUserRequest user)
+        public async Task<IActionResult> Create([FromBody] CreateUserRequest user)
         {
-            User _user = new User { Name = user.Name, Id = Guid.NewGuid() };
-            //_users.Add(_user);
+            User aux_user = new User { UserName = user.Name };
+
+
+            var userCreated = await _usersService.CreateUser(aux_user);
 
             var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
-            var locationUri = baseUrl + "/" + ApiRoutes.Users.Get.Replace("{userId}", _user.Id.ToString());
+            var locationUri = baseUrl + "/" + ApiRoutes.Users.Get.Replace("{userId}", userCreated.Id.ToString());
 
-            var response = new PostResponse { Id = _user.Id, Name = _user.Name };
+            var response = new PostResponse { Id = userCreated.Id, UserName = userCreated.UserName };
             return Created(locationUri, response);
         }
 
         [HttpPut(ApiRoutes.Users.Update)]
-        public IActionResult Update([FromRoute] Guid userId, [FromBody] UpdateUserRequest request)
+        public async Task<IActionResult> Update([FromRoute] string userId, [FromBody] UpdateUserRequest request)
         {
-            User user = new User{Id = userId, Name = request.Name};
+            var user = await _usersService.GetUserById(userId);
+            user.UserName = request.UserName;
 
-            var updated = _usersService.UpdateUser(user);
+            var updated = await _usersService.UpdateUser(user);
             if ( !updated) return NotFound();
             else return Ok(user);
         }
 
         [HttpDelete(ApiRoutes.Users.Delete)]
-        public IActionResult Update([FromRoute] Guid userId)
+        public async Task<IActionResult> Delete([FromRoute] string userId)
         {
-            var deleted = _usersService.DeleteUser(userId);
+            var deleted = await _usersService.DeleteUser(userId);
             if ( !deleted) return NotFound();
             else return NoContent();
         }
