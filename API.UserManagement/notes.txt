@@ -1,3 +1,27 @@
 -domain models ar anemic, so they should have all the assert validation logic of the model itself.
 -dtos may be included and they might be in the application service layer, not in the domain layer.
 -la interficie del repository en comptes de passar per parametres Guid passar T ja que en algunes databases no va el guid.https://www.c-sharpcorner.com/article/onion-architecture-in-asp-net-core-mvc/
+-millorar el versioning
+
+
+
+---- authentication and authorization types:
+
+.api key (per utilitzar rollo altres developers)
+	- no es util per usuaris 
+
+.https token (quan login es genera un token que es guarda en database i a les cookies)
+	- consulta cada cop a database(amb redis es pot millorar temps. es mes utilitzat per sessions rollo carrito)
+	- entrada a db per cada user
+	. database compartida si varies instancies del servei
+	+ can expire/refresh
+
+.jwt token (token q es genera a partir d eun secret key. utilitzat en api rest per verificar que el usuari que s'ha loguejat te permissos)
+	+ cada client es guarda el token, res a databases
+	+ menys accessos database
+	+ can expire
+	- el jwt conte 3 parts(header,payload,signature) pero esta codificat amb hash base64 per tant el payload pot ser llegit i no s'hi ha de posar informació delicada.
+
+.identity .net (per gestionar rols i permissos)
+
+.oauth (per donar permissos a una third app.)

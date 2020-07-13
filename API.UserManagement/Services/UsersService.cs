@@ -28,18 +28,20 @@ namespace API.UserManagement.Services
 
         public async Task<bool> UpdateUser(User user)
         {
-            //if(user.Id == null) throw new ArgumentNullException("User id cannot be null");
+            user.ModifiedDate = DateTime.Now;
+
             return await _usersRepository.UpdateUser(user);
         }
 
         public async Task<bool> DeleteUser(string id)
         {
-            //if(id == null) throw new ArgumentNullException("User id cannot be null");
             return await _usersRepository.DeleteUser(id);
         }
 
         public async Task<User> CreateUser(User user)
         {
+            user.AddedDate = DateTime.Now;
+
             await _usersRepository.CreateUser(user);
             return user;
         }
