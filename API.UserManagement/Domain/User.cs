@@ -12,5 +12,8 @@ namespace API.UserManagement.Domain
     {
         [Column(TypeName = "varchar(150)")]
         public string LastName { get; set; }
+        public override string UserName { get => base.UserName; set => base.UserName = value; }
+        public override string PasswordHash { get => base.PasswordHash; set => base.PasswordHash = value; }
+        public override string Email { get => base.Email; set => base.Email = value; }
     }
 }

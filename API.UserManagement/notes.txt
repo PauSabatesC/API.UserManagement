@@ -2,7 +2,7 @@
 -dtos may be included and they might be in the application service layer, not in the domain layer.
 -la interficie del repository en comptes de passar per parametres Guid passar T ja que en algunes databases no va el guid.https://www.c-sharpcorner.com/article/onion-architecture-in-asp-net-core-mvc/
 -millorar el versioning
-
+-look into token invalidation (i only do validation?)
 
 
 ---- authentication and authorization types:

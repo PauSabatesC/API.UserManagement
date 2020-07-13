@@ -3,6 +3,8 @@ using API.UserManagement.Contracts.v1.Requests;
 using API.UserManagement.Contracts.v1.Responses;
 using API.UserManagement.Domain;
 using API.UserManagement.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -11,6 +13,7 @@ using System.Threading.Tasks;
 
 namespace API.UserManagement.Controllers.v1
 {
+    [Authorize(AuthenticationSchemes =JwtBearerDefaults.AuthenticationScheme)]
     public class UsersController : Controller
     {
         private readonly IUsersService _usersService;

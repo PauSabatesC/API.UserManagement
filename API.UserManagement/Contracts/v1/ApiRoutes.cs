@@ -19,5 +19,13 @@ namespace API.LoginAndRegister.Contracts.v1
             public const string Update = Base + "/users/{userId}";
             public const string Delete = Base + "/users/{userId}";
         }
+
+        public static class Identity
+        {
+            public const string Login = Base + "/login";
+            public const string Register = Base + "/register";
+        }
+
+
     }
 }

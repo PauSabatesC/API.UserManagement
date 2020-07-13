@@ -84,22 +84,31 @@ namespace API.LoginAndRegister
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtSettings.Secret)),
+                    ValidateIssuer = false,
                     ValidateAudience = false,
                     ValidateLifetime = true,
+
                     RequireExpirationTime = false
                 };
             });
 
             ////DB
             services.AddDbContext<DataContext>(dbContextOption => dbContextOption.UseSqlServer(Configuration.GetConnectionString("SQLServerDb")));
-            services.AddIdentityCore<User>()
-                .AddRoles<IdentityRole>()
-                .AddEntityFrameworkStores<DataContext>();
+            services.AddIdentityCore<User>(options =>
+            {
+                options.Password.RequiredLength = 6;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireDigit = false;
+            })
+            .AddRoles<IdentityRole>()
+            .AddEntityFrameworkStores<DataContext>();
 
             ////OTHER SERVICES DI
             services.AddScoped<IUsersService,UsersService>();
             services.AddTransient<IUsersRepository, UserEFRepository>();
-
+            services.AddScoped<IIdentityService, IdentityService>();
 
         }
 
