@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace API.UserManagement.Domain
 {
-    public class BaseEntity : IdentityUser
+    public class UserBaseEntity : IdentityUser
     {
         public DateTime AddedDate { get; set; }
         public DateTime ModifiedDate { get; set; }

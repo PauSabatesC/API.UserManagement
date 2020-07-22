@@ -1,6 +1,6 @@
-﻿using API.LoginAndRegister.Contracts.v1;
-using API.UserManagement.Contracts.v1.Requests;
-using API.UserManagement.Contracts.v1.Responses;
+﻿using API.UserManagement.Controllers.v1.Contracts;
+using API.UserManagement.Controllers.v1.Contracts.Requests;
+using API.UserManagement.Controllers.v1.Contracts.Responses;
 using API.UserManagement.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -25,6 +25,33 @@ namespace API.UserManagement.Controllers.v1
             var authResponse = await _identityService.RegisterAsync(request.email, request.password);
 
             if(!authResponse.Success)
+            {
+                return BadRequest(new AuthFailureResponse
+                {
+                    ErrorMessage = authResponse.ErrorMessages
+                });
+            }
+
+            return Ok(new AuthSuccessResponse
+            {
+                Token = authResponse.Token
+            });
+        }
+
+        [HttpPost(ApiRoutes.Identity.Login)]
+        public async Task<IActionResult> Login([FromBody] UserLoginRequest request)
+        {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(new AuthFailureResponse
+                {
+                    ErrorMessage = ModelState.Values.SelectMany(x => x.Errors.Select(y => y.ErrorMessage))
+                });
+            }
+
+            var authResponse = await _identityService.LoginAsync(request.email, request.password);
+
+            if (!authResponse.Success)
             {
                 return BadRequest(new AuthFailureResponse
                 {

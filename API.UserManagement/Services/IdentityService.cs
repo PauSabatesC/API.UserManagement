@@ -23,11 +23,38 @@ namespace API.UserManagement.Services
             _jwtSettings = jwtSettings;
         }
 
+        public async Task<AuthenticationResult> LoginAsync(string email, string password)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if (user == null)
+            {
+                return new AuthenticationResult
+                {
+                    ErrorMessages = new[] { "User does not exist." },
+                    Success = false
+                };
+            }
+
+            var userHasValidPassword = await _userManager.CheckPasswordAsync(user, password);
+
+            if (!userHasValidPassword)
+            {
+                return new AuthenticationResult
+                {
+                    ErrorMessages = new[] { "Email/Password are incorrect." },
+                    Success = false
+                };
+            }
+
+            return GenerateAuthenticationResult(user);
+        }
+
         public async Task<AuthenticationResult> RegisterAsync(string email, string password)
         {
             var existingUser = await _userManager.FindByEmailAsync(email);
 
-            if(existingUser != null)
+            if (existingUser != null)
             {
                 return new AuthenticationResult
                 {
@@ -41,10 +68,10 @@ namespace API.UserManagement.Services
                 Email = email,
                 UserName = email
             };
-            
+
             var createdUser = await _userManager.CreateAsync(newUser, password);
 
-            if(!createdUser.Succeeded)
+            if (!createdUser.Succeeded)
             {
                 return new AuthenticationResult
                 {
@@ -53,6 +80,11 @@ namespace API.UserManagement.Services
                 };
             }
 
+            return GenerateAuthenticationResult(newUser);
+        }
+
+        private AuthenticationResult GenerateAuthenticationResult(User newUser)
+        {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_jwtSettings.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor

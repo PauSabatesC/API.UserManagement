@@ -4,14 +4,16 @@ using API.UserManagement.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace API.UserManagement.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20200722132956_UsersAndAdminMetadata")]
+    partial class UsersAndAdminMetadata
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -49,30 +51,25 @@ namespace API.UserManagement.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("UserMetaDataId")
+                    b.Property<string>("UserMetaDataUserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserMetaDataId");
+                    b.HasIndex("UserMetaDataUserId");
 
                     b.ToTable("Historic");
                 });
 
             modelBuilder.Entity("API.UserManagement.Domain.UserMetaData", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("TimesPasswordReset")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
+                    b.HasKey("UserId");
 
                     b.ToTable("usersMetaData");
                 });
@@ -316,14 +313,16 @@ namespace API.UserManagement.Migrations
                 {
                     b.HasOne("API.UserManagement.Domain.UserMetaData", null)
                         .WithMany("LoginList")
-                        .HasForeignKey("UserMetaDataId");
+                        .HasForeignKey("UserMetaDataUserId");
                 });
 
             modelBuilder.Entity("API.UserManagement.Domain.UserMetaData", b =>
                 {
                     b.HasOne("API.UserManagement.Domain.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

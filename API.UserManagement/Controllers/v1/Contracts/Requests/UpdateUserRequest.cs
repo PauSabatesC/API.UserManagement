@@ -1,14 +1,12 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace API.UserManagement.Contracts.v1.Responses
+namespace API.UserManagement.Controllers.v1.Contracts.Requests
 {
-    public class PostResponse
+    public class UpdateUserRequest
     {
-        public string Id { get; set; }
         public string UserName { get; set; }
-
     }
 }

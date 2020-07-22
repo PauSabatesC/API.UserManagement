@@ -9,7 +9,9 @@ namespace API.UserManagement.Data
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options) {}
 
-        public DbSet<User> _users {get; set;}
+        public DbSet<User> users {get; set;}
+        public DbSet<AdminActions> adminActions { get; set; }
+        public DbSet<UserMetaData> usersMetaData { get; set; }
 
     }
 }

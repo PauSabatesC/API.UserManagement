@@ -1,6 +1,6 @@
-﻿using API.LoginAndRegister.Contracts.v1;
-using API.UserManagement.Contracts.v1.Requests;
-using API.UserManagement.Contracts.v1.Responses;
+﻿using API.UserManagement.Controllers.v1.Contracts;
+using API.UserManagement.Controllers.v1.Contracts.Requests;
+using API.UserManagement.Controllers.v1.Contracts.Responses;
 using API.UserManagement.Domain;
 using API.UserManagement.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using API.UserManagement.Extensions;
 
 namespace API.UserManagement.Controllers.v1
 {
@@ -42,10 +43,10 @@ namespace API.UserManagement.Controllers.v1
         [HttpPost(ApiRoutes.Users.Create)]
         public async Task<IActionResult> Create([FromBody] CreateUserRequest user)
         {
-            User aux_user = new User { UserName = user.Name };
+            User aux_user = new User { UserName = user.Name};
+            var adminUserId = HttpContext.GetUserId();
 
-
-            var userCreated = await _usersService.CreateUser(aux_user);
+            var userCreated = await _usersService.CreateUser(aux_user, adminUserId);
 
             var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
             var locationUri = baseUrl + "/" + ApiRoutes.Users.Get.Replace("{userId}", userCreated.Id.ToString());
@@ -61,7 +62,7 @@ namespace API.UserManagement.Controllers.v1
             user.UserName = request.UserName;
 
             var updated = await _usersService.UpdateUser(user);
-            if ( !updated) return NotFound();
+            if (!updated) return NotFound();
             else return Ok(user);
         }
 

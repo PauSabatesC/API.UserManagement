@@ -12,6 +12,6 @@ namespace API.UserManagement.Services
         Task<User> GetUserById(string id);
         Task<bool> UpdateUser(User user);
         Task<bool> DeleteUser(string id);
-        Task<User> CreateUser(User user);
+        Task<User> CreateUser(User user, string adminId);
     }
 }

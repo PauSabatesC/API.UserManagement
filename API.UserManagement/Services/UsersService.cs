@@ -38,10 +38,13 @@ namespace API.UserManagement.Services
             return await _usersRepository.DeleteUser(id);
         }
 
-        public async Task<User> CreateUser(User user)
+        public async Task<User> CreateUser(User user, string adminId)
         {
             user.AddedDate = DateTime.Now;
-
+            
+            var admin = await _usersRepository.ReadUser(adminId);
+            user.AdminCreator = admin;
+            
             await _usersRepository.CreateUser(user);
             return user;
         }

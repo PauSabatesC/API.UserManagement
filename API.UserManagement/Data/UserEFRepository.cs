@@ -36,13 +36,13 @@ namespace API.UserManagement.Data
 
         public async Task<User> ReadUser(string id)
         {
-            var queryable = _dataContext._users.AsQueryable();
+            var queryable = _dataContext.users.AsQueryable();
             return await queryable.SingleOrDefaultAsync<User>(x => x.Id == id);
         }
 
         public async Task<IEnumerable<User>> ReadUsers()
         {
-            var queryable = _dataContext._users.AsQueryable();
+            var queryable = _dataContext.users.AsQueryable();
             return await queryable.ToListAsync();
         }
 
