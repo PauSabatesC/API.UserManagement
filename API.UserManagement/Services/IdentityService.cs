@@ -83,6 +83,13 @@ namespace API.UserManagement.Services
             return GenerateAuthenticationResult(newUser);
         }
 
+        public async Task<AuthenticationResult> RefreshTokenAsync(string token, string refreshToken)
+        {
+            
+        }
+
+
+
         private AuthenticationResult GenerateAuthenticationResult(User newUser)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -96,7 +103,7 @@ namespace API.UserManagement.Services
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     new Claim("id", newUser.Id)
                 }),
-                Expires = DateTime.UtcNow.AddHours(2),
+                Expires = DateTime.UtcNow.Add(_jwtSettings.TokenLifeTime),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 
