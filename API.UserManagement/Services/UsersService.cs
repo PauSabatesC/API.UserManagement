@@ -9,9 +9,9 @@ namespace API.UserManagement.Services
 {
     public class UsersService : IUsersService
     {
-        private readonly IUsersRepository _usersRepository;
+        private readonly IUsersAdminManagementRepository _usersRepository;
 
-        public UsersService(IUsersRepository usersRepository)
+        public UsersService(IUsersAdminManagementRepository usersRepository)
         {
             _usersRepository = usersRepository;
         }

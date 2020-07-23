@@ -111,8 +111,9 @@ namespace API.LoginAndRegister
 
             ////OTHER SERVICES DI
             services.AddScoped<IUsersService,UsersService>();
-            services.AddTransient<IUsersRepository, UserEFRepository>();
+            services.AddTransient<IUsersAdminManagementRepository, UsersAdminManagementRepository>();
             services.AddScoped<IIdentityService, IdentityService>();
+            services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 
         }
 

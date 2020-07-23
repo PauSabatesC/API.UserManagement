@@ -5,7 +5,7 @@ using API.UserManagement.Domain;
     
 namespace API.UserManagement.Data
 {
-    public interface IUsersRepository
+    public interface IUsersAdminManagementRepository
     {
         Task<User> CreateUser(User user);
         Task<IEnumerable<User>> ReadUsers();

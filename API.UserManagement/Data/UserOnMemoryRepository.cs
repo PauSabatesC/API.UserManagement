@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.UserManagement.Data
 {
-    public class UserOnMemoryRepository : IUsersRepository
+    public class UserOnMemoryRepository : IUsersAdminManagementRepository
     {
         private readonly List<User> _users = new List<User>();
 

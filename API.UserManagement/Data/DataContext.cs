@@ -12,6 +12,7 @@ namespace API.UserManagement.Data
         public DbSet<User> users {get; set;}
         public DbSet<AdminActions> adminActions { get; set; }
         public DbSet<UserMetaData> usersMetaData { get; set; }
+        public DbSet<RefreshToken> refreshTokens { get; set; }
 
     }
 }

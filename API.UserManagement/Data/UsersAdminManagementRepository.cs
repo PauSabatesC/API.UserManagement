@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.UserManagement.Data
 {
-    public class UserEFRepository : IUsersRepository
+    public class UsersAdminManagementRepository : IUsersAdminManagementRepository
     {
         private readonly DataContext _dataContext;
 
-        public UserEFRepository(DataContext dataContext)
+        public UsersAdminManagementRepository(DataContext dataContext)
         {
             _dataContext = dataContext;
         }

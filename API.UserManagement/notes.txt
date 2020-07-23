@@ -4,7 +4,7 @@
 -millorar el versioning
 -look into token invalidation (i only do validation?)
 -posar els Responses com aqui https://github.com/zkavtaskin/Domain-Driven-Design-Example/blob/master/eCommerce.WebService/Controllers/CartController.cs
-
+-posar UserManager and JwtSettings DI as Interfaces of the Data.
 
 ---- authentication and authorization types:
 
@@ -17,7 +17,7 @@
 	. database compartida si varies instancies del servei
 	+ can expire/refresh
 
-.jwt token (token q es genera a partir d eun secret key. utilitzat en api rest per verificar que el usuari que s'ha loguejat te permissos)
+.jwt token (token q es genera a partir de un secret key. utilitzat en api rest per verificar que el usuari que s'ha loguejat te permissos)
 	+ cada client es guarda el token, res a databases
 	+ menys accessos database
 	+ can expire
