@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using API.LoginAndRegister.Options;
-using API.UserManagement.Data;
-using API.UserManagement.Domain;
-using API.UserManagement.Options;
-using API.UserManagement.Services;
+using UserManagement.Domain.Entities;
+using UserManagement.Domain.RepositoryInterfaces;
+using UserManagement.Services.Options;
+using UserManagement.Services.Boundaries;
+using UserManagement.Services;
+using UserManagement.Services.Extensions;
+using UserManagement.Infrastructure.Database;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -19,6 +21,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+
 
 namespace API.LoginAndRegister
 {
@@ -97,6 +100,9 @@ namespace API.LoginAndRegister
             });
 
             ////DB
+            //string assemblyName = typeof(DataContext).Namespace;
+            //services.AddDbContext<DataContext>(dbContextOption => dbContextOption.UseSqlServer(Configuration.GetConnectionString("SQLServerDb"),
+            //                                                                                    optionsBuilder => optionsBuilder.MigrationsAssembly(assemblyName)));
             services.AddDbContext<DataContext>(dbContextOption => dbContextOption.UseSqlServer(Configuration.GetConnectionString("SQLServerDb")));
             services.AddIdentityCore<User>(options =>
             {

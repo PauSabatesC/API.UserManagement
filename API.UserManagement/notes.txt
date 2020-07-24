@@ -60,3 +60,30 @@ Features:
 	- SSO (Single Sign On).
 
 Exemples: https://fusionauth.io/ o https://auth0.com/
+
+
+
+
+---Migration to Onion + DDD---
+
+-UserManagement.Domain
+	-Entities
+	-Repository Interfaces
+-UserManagement.Services
+	-DTOs
+	-Options
+	-Extensions
+	-Boundaries
+-UserManagement.Infrastructure
+	-Database
+		-SQLServer
+			-Migrations
+-UserManagement.API
+	-Controllers
+		-v1
+			-Contracts
+				-Requests
+				-Responses
+				ApiRoutes.cs
+	appsettings.json
+

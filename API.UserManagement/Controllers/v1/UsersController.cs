@@ -1,8 +1,9 @@
 ﻿using API.UserManagement.Controllers.v1.Contracts;
 using API.UserManagement.Controllers.v1.Contracts.Requests;
 using API.UserManagement.Controllers.v1.Contracts.Responses;
-using API.UserManagement.Domain;
-using API.UserManagement.Services;
+using UserManagement.Domain.Entities;
+using UserManagement.Services.Boundaries;
+using UserManagement.Services.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +11,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using API.UserManagement.Extensions;
 
 namespace API.UserManagement.Controllers.v1
 {

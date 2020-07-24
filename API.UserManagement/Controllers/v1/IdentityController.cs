@@ -1,7 +1,7 @@
 ﻿using API.UserManagement.Controllers.v1.Contracts;
 using API.UserManagement.Controllers.v1.Contracts.Requests;
 using API.UserManagement.Controllers.v1.Contracts.Responses;
-using API.UserManagement.Services;
+using UserManagement.Services.Boundaries;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
