@@ -1,9 +1,10 @@
 ﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace UserManagement.Infrastructure.Migrations
 {
-    public partial class IdentityUsers : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -39,11 +40,29 @@ namespace UserManagement.Infrastructure.Migrations
                     TwoFactorEnabled = table.Column<bool>(nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
                     LockoutEnabled = table.Column<bool>(nullable: false),
-                    AccessFailedCount = table.Column<int>(nullable: false)
+                    AccessFailedCount = table.Column<int>(nullable: false),
+                    Discriminator = table.Column<string>(nullable: false),
+                    AddedDate = table.Column<DateTime>(nullable: true),
+                    ModifiedDate = table.Column<DateTime>(nullable: true),
+                    LastName = table.Column<string>(type: "varchar(150)", nullable: true),
+                    UpdatedBy = table.Column<string>(nullable: true),
+                    CreatedBy = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AspNetUsers_AspNetUsers_CreatedBy",
+                        column: x => x.CreatedBy,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_AspNetUsers_AspNetUsers_UpdatedBy",
+                        column: x => x.UpdatedBy,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -51,7 +70,7 @@ namespace UserManagement.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     RoleId = table.Column<string>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
                     ClaimValue = table.Column<string>(nullable: true)
@@ -68,11 +87,31 @@ namespace UserManagement.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "adminActions",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false),
+                    Action = table.Column<string>(nullable: true),
+                    Date = table.Column<DateTime>(nullable: false),
+                    UserAdminId = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_adminActions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_adminActions_AspNetUsers_UserAdminId",
+                        column: x => x.UserAdminId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetUserClaims",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     UserId = table.Column<string>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
                     ClaimValue = table.Column<string>(nullable: true)
@@ -152,6 +191,72 @@ namespace UserManagement.Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "refreshTokens",
+                columns: table => new
+                {
+                    Token = table.Column<string>(nullable: false),
+                    JwtId = table.Column<string>(nullable: true),
+                    CreationDate = table.Column<DateTime>(nullable: false),
+                    ExpiryDate = table.Column<DateTime>(nullable: false),
+                    Used = table.Column<bool>(nullable: false),
+                    Invalidated = table.Column<bool>(nullable: false),
+                    UserId = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_refreshTokens", x => x.Token);
+                    table.ForeignKey(
+                        name: "FK_refreshTokens_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "usersMetaData",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false),
+                    TimesPasswordReset = table.Column<int>(nullable: false),
+                    UserId = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_usersMetaData", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_usersMetaData_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Historic",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    Date = table.Column<DateTime>(nullable: false),
+                    UserMetaDataId = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Historic", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Historic_usersMetaData_UserMetaDataId",
+                        column: x => x.UserMetaDataId,
+                        principalTable: "usersMetaData",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_adminActions_UserAdminId",
+                table: "adminActions",
+                column: "UserAdminId");
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -190,10 +295,38 @@ namespace UserManagement.Infrastructure.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_CreatedBy",
+                table: "AspNetUsers",
+                column: "CreatedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_UpdatedBy",
+                table: "AspNetUsers",
+                column: "UpdatedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Historic_UserMetaDataId",
+                table: "Historic",
+                column: "UserMetaDataId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_refreshTokens_UserId",
+                table: "refreshTokens",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_usersMetaData_UserId",
+                table: "usersMetaData",
+                column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "adminActions");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -210,7 +343,16 @@ namespace UserManagement.Infrastructure.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Historic");
+
+            migrationBuilder.DropTable(
+                name: "refreshTokens");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "usersMetaData");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

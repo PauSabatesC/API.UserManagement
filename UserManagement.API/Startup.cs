@@ -8,7 +8,7 @@ using UserManagement.Domain.RepositoryInterfaces;
 using UserManagement.Services.Options;
 using UserManagement.Services.Boundaries;
 using UserManagement.Services;
-using UserManagement.Services.Extensions;
+using Common.Extensions;
 using UserManagement.Infrastructure.Database;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;

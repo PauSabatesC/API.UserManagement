@@ -2,11 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Common.Extensions;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using UserManagement.Infrastructure.Database;
 
 namespace API.LoginAndRegister
 {
@@ -18,8 +20,9 @@ namespace API.LoginAndRegister
         }
 
         public static IWebHost BuildWebHost(string[] args) =>
-         WebHost.CreateDefaultBuilder(args)
-             .UseStartup<Startup>()
-             .Build();
+         WebHost.CreateDefaultBuilder(args) 
+            .UseStartup<Startup>()
+            .Build()
+            .CreateDatabase<DataContext>();
     }
 }

@@ -10,8 +10,8 @@ using UserManagement.Infrastructure.Database;
 namespace UserManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20200724213742_AfterOnionChange")]
-    partial class AfterOnionChange
+    [Migration("20200725151126_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

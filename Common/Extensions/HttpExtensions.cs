@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace UserManagement.Services.Extensions
+namespace UserManagement.Common.Extensions
 {
     public static class HttpExtensions
     {

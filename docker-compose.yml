@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+  api-rest:
+    build: .
+    restart: on-failure
+    container_name: UserManagement-apiRest
+    #args:
+      #BUILDCONFIG: 
+    ports:
+      - "9876:80"
+    depends_on:
+      - sqlDB
+      - redis
+    networks:
+      - usermangmtnNet
+        
+  sqlDB:
+    image: microsoft/mssql-server-linux:2017-latest
+    container_name: UserManagement-sqlDB
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=UserMngmt1234
+      - MSSQL_TCP_PORT=1433
+    ports:
+      - "1400:1433"
+    networks:
+      - usermangmtnNet
+  
+  redis:
+    image: redis
+    container_name: UserManagement-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - usermangmtnNet
+
+
+networks:
+  usermangmtnNet:
+    
