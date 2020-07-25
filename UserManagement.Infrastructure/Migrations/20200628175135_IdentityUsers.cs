@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace UserManagement.Infrastructure.Database.Migrations
+namespace UserManagement.Infrastructure.Migrations
 {
     public partial class IdentityUsers : Migration
     {
