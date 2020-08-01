@@ -27,6 +27,7 @@ namespace API.UserManagement.Controllers.v1
 
 
         [HttpGet(ApiRoutes.Users.GetAll)]
+        [Authorize(Policy = "UsersViewer")]
         public async Task<IActionResult> GetAll()
         {
             var users = await _usersService.GetUsers();

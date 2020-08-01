@@ -21,7 +21,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-
+using UserManagement.Domain.Enums;
 
 namespace API.LoginAndRegister
 {
@@ -99,10 +99,12 @@ namespace API.LoginAndRegister
                 x.TokenValidationParameters = tokenValidationParameters;
             });
 
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("UsersViewer", builder => builder.RequireClaim(ClaimsEnum.Users, "true"));
+            });
+
             ////DB
-            //string assemblyName = typeof(DataContext).Namespace;
-            //services.AddDbContext<DataContext>(dbContextOption => dbContextOption.UseSqlServer(Configuration.GetConnectionString("SQLServerDb"),
-            //                                                                                    optionsBuilder => optionsBuilder.MigrationsAssembly(assemblyName)));
             services.AddDbContext<DataContext>(dbContextOption => dbContextOption.UseSqlServer(Configuration.GetConnectionString("SQLServerDb")));
             services.AddIdentityCore<User>(options =>
             {
@@ -117,8 +119,8 @@ namespace API.LoginAndRegister
 
             ////OTHER SERVICES DI
             services.AddScoped<IUsersService,UsersService>();
-            services.AddTransient<IUsersAdminManagementRepository, UsersAdminManagementRepository>();
             services.AddScoped<IIdentityService, IdentityService>();
+            services.AddTransient<IUsersAdminManagementRepository, UsersAdminManagementRepository>();        
             services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 
         }

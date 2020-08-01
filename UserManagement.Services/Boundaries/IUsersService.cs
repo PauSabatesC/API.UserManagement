@@ -11,5 +11,6 @@ namespace UserManagement.Services.Boundaries
         Task<bool> UpdateUser(User user);
         Task<bool> DeleteUser(string id);
         Task<User> CreateUser(User user, string adminId);
+        Task<bool> GiveUserAdminClaims(string id);
     }
 }

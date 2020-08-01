@@ -1,6 +1,7 @@
 ﻿using UserManagement.Domain.RepositoryInterfaces;
 using UserManagement.Domain.Entities;
 using System.Threading.Tasks;
+using UserManagement.Domain.ValueObjects;
 
 namespace UserManagement.Services.Boundaries
 {

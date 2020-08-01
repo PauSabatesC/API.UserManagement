@@ -1,10 +1,16 @@
+
+http://localhost:9876/swagger/index.html
+
+
 -domain models ar anemic, so they should have all the assert validation logic of the model itself.
 -dtos may be included and they might be in the application service layer, not in the domain layer.
 -la interficie del repository en comptes de passar per parametres Guid passar T ja que en algunes databases no va el guid. https://www.c-sharpcorner.com/article/onion-architecture-in-asp-net-core-mvc/
 -millorar el versioning
 -look into token invalidation (i only do validation?)
 -posar els Responses com aqui https://github.com/zkavtaskin/Domain-Driven-Design-Example/blob/master/eCommerce.WebService/Controllers/CartController.cs
--posar UserManager and JwtSettings DI as Interfaces of the Data.
+-millorar seguretat de les pass del appsettings i del dockercompose
+-nose on posar els try catch i on posar els logs
+
 
 ---- authentication and authorization types:
 
@@ -21,7 +27,7 @@
 	+ cada client es guarda el token, res a databases
 	+ menys accessos database
 	+ can expire
-	- el jwt conte 3 parts(header,payload,signature) pero esta codificat amb hash base64 per tant el payload pot ser llegit i no s'hi ha de posar informació delicada.
+	- el jwt conte 3 parts(header,payload,signature) pero esta codificat amb hash base64 per tant el payload pot ser llegit i no s'hi ha de posar informaciï¿½ delicada.
 
 .identity .net (per gestionar rols i permissos)
 

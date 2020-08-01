@@ -6,11 +6,11 @@ namespace UserManagement.Domain.RepositoryInterfaces
 {
     public interface IUsersAdminManagementRepository
     {
-        Task<User> CreateUser(User user);
-        Task<IEnumerable<User>> ReadUsers();
-        Task<User> ReadUser(string id);
-        Task<bool> UpdateUser(User user);
-        Task<bool> DeleteUser(string id);
+        Task<User> CreateUserAsync(User user);
+        Task<IEnumerable<User>> ReadUsersAsync();
+        Task<User> ReadUserAsync(string id);
+        Task<bool> UpdateUserAsync(User user);
+        Task<bool> DeleteUserAsync(string id);
 
     }
 }

@@ -17,38 +17,38 @@ namespace UserManagement.Infrastructure.Database
             _dataContext = dataContext;
         }
 
-        public async Task<User> CreateUser(User user)
+        public async Task<User> CreateUserAsync(User user)
         {
             await _dataContext.Users.AddAsync(user);
             var changes = await _dataContext.SaveChangesAsync();
-            if (changes > 0) return await ReadUser(user.Id);
+            if (changes > 0) return await ReadUserAsync(user.Id);
             else throw new ApplicationException($"Cannot add user: {user.Id} to database");
         }
 
-        public async Task<bool> DeleteUser(string id)
+        public async Task<bool> DeleteUserAsync(string id)
         {
-            var user = ReadUser(id);
+            var user = await ReadUserAsync(id);
             
             if (user == null) return false;
 
-            _dataContext.Users.Remove(user.Result);
+            _dataContext.Users.Remove(user);
             var changes = await _dataContext.SaveChangesAsync();
             return changes > 0;
         }
 
-        public async Task<User> ReadUser(string id)
+        public async Task<User> ReadUserAsync(string id)
         {
             var queryable = _dataContext.users.AsQueryable();
             return await queryable.SingleOrDefaultAsync<User>(x => x.Id == id);
         }
 
-        public async Task<IEnumerable<User>> ReadUsers()
+        public async Task<IEnumerable<User>> ReadUsersAsync()
         {
             var queryable = _dataContext.users.AsQueryable();
             return await queryable.ToListAsync();
         }
 
-        public async Task<bool> UpdateUser(User user)
+        public async Task<bool> UpdateUserAsync(User user)
         {
             _dataContext.Users.Update(user);
             var changes = await _dataContext.SaveChangesAsync();

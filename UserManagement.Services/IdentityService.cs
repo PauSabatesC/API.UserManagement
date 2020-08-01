@@ -11,6 +11,9 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using UserManagement.Domain.ValueObjects;
+using System.Collections.Generic;
+using UserManagement.Domain.Enums;
 
 namespace UserManagement.Services
 {
@@ -45,7 +48,9 @@ namespace UserManagement.Services
             }
 
             var userHasValidPassword = await _userManager.CheckPasswordAsync(user, password);
-
+            
+            await _userManager.AddClaimAsync(user, new Claim(ClaimsEnum.Users, "true"));//TODO:DELETE
+            
             if (!userHasValidPassword)
             {
                 return new AuthenticationResult
@@ -71,8 +76,10 @@ namespace UserManagement.Services
                 };
             }
 
+            var userId = Guid.NewGuid();
             var newUser = new User
             {
+                Id = userId.ToString(),
                 Email = email,
                 UserName = email
             };
@@ -180,15 +187,21 @@ namespace UserManagement.Services
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_jwtSettings.Secret);
+
+            var claims = new List<Claim>
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.Email),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim("id", user.Id)
+            };
+
+            var userClaims = await _userManager.GetClaimsAsync(user);
+            claims.AddRange(userClaims);
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new System.Security.Claims.ClaimsIdentity(new[]
-                {
-                    new Claim(JwtRegisteredClaimNames.Sub, user.Email),
-                    new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                    new Claim("id", user.Id)
-                }),
+                Subject = new System.Security.Claims.ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.Add(_jwtSettings.TokenLifeTime),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
