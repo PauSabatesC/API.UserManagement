@@ -3,13 +3,9 @@ using API.UserManagement.Controllers.v1.Contracts.Requests;
 using API.UserManagement.Controllers.v1.Contracts.Responses;
 using UserManagement.Domain.Entities;
 using UserManagement.Services.Boundaries;
-using Common.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using UserManagement.Common.Extensions;
 
@@ -27,7 +23,6 @@ namespace API.UserManagement.Controllers.v1
 
 
         [HttpGet(ApiRoutes.Users.GetAll)]
-        [Authorize(Policy = "UsersViewer")]
         public async Task<IActionResult> GetAll()
         {
             var users = await _usersService.GetUsers();

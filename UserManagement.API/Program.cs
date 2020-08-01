@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Common.Extensions;
+using API.UserManagement.Extensions;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -14,15 +14,19 @@ namespace API.LoginAndRegister
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
-            BuildWebHost(args).Run();
+            var host = CreateWebHostBuilder(args).Build();
+
+            await host.CreateDatabase<DataContext>();
+
+            await host.RunAsync();
         }
 
-        public static IWebHost BuildWebHost(string[] args) =>
-         WebHost.CreateDefaultBuilder(args) 
-            .UseStartup<Startup>()
-            .Build()
-            .CreateDatabase<DataContext>();
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+         WebHost.CreateDefaultBuilder(args)
+        .UseStartup<Startup>();
+
+
     }
 }

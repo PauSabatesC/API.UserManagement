@@ -1,5 +1,6 @@
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1 as build
 ARG BUILDCONFIG=Release
+RUN echo $BUILDCONFIG
 ARG VERSION=1.0.0
 
 COPY UserManagement.sln /build/
@@ -29,7 +30,8 @@ WORKDIR /build/Common
 RUN dotnet build -c $BUILDCONFIG -o /app /p:Version=$VERSION
 
 FROM build AS publish
-RUN dotnet publish -c Release -o /app 
+#Publish automatically sets Environment to Production
+RUN dotnet publish -c Release -o /app
 
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
 WORKDIR /app

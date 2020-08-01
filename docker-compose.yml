@@ -13,8 +13,6 @@ services:
     build: .
     restart: on-failure
     container_name: UserManagement-apiRest
-    #args:
-      #BUILDCONFIG: 
     ports:
       - "9876:80"
     depends_on:

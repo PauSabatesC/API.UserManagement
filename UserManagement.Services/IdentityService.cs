@@ -2,7 +2,6 @@
 using UserManagement.Domain.RepositoryInterfaces;
 using UserManagement.Services.Options;
 using UserManagement.Services.Boundaries;
-using Common.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System;
