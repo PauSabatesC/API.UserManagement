@@ -1,11 +1,3 @@
-##############################################
-#                                            #
-# DOCKER COMPOSE FOR DEVELOPMENT ENVIRONMENT #
-#                                            #
-# http://localhost:9876/swagger/index.html   #
-#                                            #
-##############################################
-
 version: '3'
 
 services:
@@ -14,7 +6,7 @@ services:
     restart: on-failure
     container_name: UserManagement-apiRest
     ports:
-      - "9876:80"
+      - "80:80"
     depends_on:
       - sqlDB
       - redis

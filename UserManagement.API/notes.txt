@@ -1,15 +1,15 @@
 
 RUN:
-- dotnet run --launch-profile Development/Production -c Debug/Release
 
 -Development build
-	-
+	- docker-compose -f docker-compose-debugEnv.yml build
+	- docker-compose -f docker-compose-debugEnv.yml up
+	- https://localhost:5001/swagger/index.html
 
 -Production like build
 	- docker-compose build
 	- docker-compose up
-
-- http://localhost:9876/swagger/index.html
+	- http://localhost/swagger/index.html
 
 
 -domain models ar anemic, so they should have all the assert validation logic of the model itself.

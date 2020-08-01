@@ -1,0 +1,15 @@
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1 as build
+
+ENV ASPNETCORE_ENVIRONMENT=Development
+ENV DOTNET_USE_POLLING_FILE_WATCHER=true  
+ENV ASPNETCORE_URLS=http://+:80
+
+WORKDIR /build/
+COPY . .
+RUN dotnet build
+
+WORKDIR /build/UserManagement.API
+RUN ls
+EXPOSE 80
+EXPOSE 443
+ENTRYPOINT ["dotnet", "run", "--launch-profile", "Development", "-c", "Debug"] 

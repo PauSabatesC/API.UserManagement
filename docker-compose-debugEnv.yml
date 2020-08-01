@@ -1,0 +1,50 @@
+##############################################
+#                                            #
+# DOCKER COMPOSE FOR DEVELOPMENT ENVIRONMENT #
+#                                            #
+# http://localhost:9876/swagger/index.html   #
+#                                            #
+##############################################
+
+version: '3'
+
+services:
+  api-rest:
+    build:
+      context: .
+      dockerfile: Dockerfile-debugEnv
+    restart: on-failure
+    container_name: UserManagement-apiRestDev
+    ports:
+      - "5000:5000"
+      - "5001:5001"
+    depends_on:
+      - sqlDB
+      - redis
+    networks:
+      - usermangmtnNetDev
+        
+  sqlDB:
+    image: microsoft/mssql-server-linux:2017-latest
+    container_name: UserManagement-sqlDBDev
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=UserMngmt1234
+      - MSSQL_TCP_PORT=1433
+    ports:
+      - "1400:1433"
+    networks:
+      - usermangmtnNetDev
+  
+  redis:
+    image: redis
+    container_name: UserManagement-redisDev
+    ports:
+      - "6379:6379"
+    networks:
+      - usermangmtnNetDev
+
+
+networks:
+  usermangmtnNetDev:
+    
