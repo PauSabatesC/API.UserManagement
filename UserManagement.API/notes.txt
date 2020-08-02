@@ -48,32 +48,6 @@ RUN:
 
 ----posar al readme----
 
-Production ready API server for Authentication, authorization, and user management easy to integrate anywhere with anything. Also it's free, with all its features, forever.
-
-Launch:
-	(explicar docker build/run i com conectar bbdd)
-Features:
-	- Asynchronous login and registration.
-	- Secure authentication and authorization.
-	- JWT token.
-	- Refresh tokens.
-	- Claims and roles.
-	- Admin endpoints for management.
-	- Third party oauth services(twitter, google).
-	- SDK for developers.
-	- Onion architecture, easy to maintain/add new features.
-	- Swagger documentation.
-	- Requests validation.
-	- Db tables to log users metadata.
-	- Response caching.
-	- Health checks.
-	- Versioned API.
-	(Future features)
-	- AWS IAM authentication
-	- Easier cloud deploy using Terraform and environment files.
-	- Strong security tests and analysis.
-	- MFA (Multi-factor authentication).
-	- SSO (Single Sign On).
 
 Exemples: https://fusionauth.io/ o https://auth0.com/
 
