@@ -16,19 +16,19 @@ namespace UserManagement.Infrastructure.Database
     {
         public static async Task SeedDefaultAdmin(UserManager<User> userManager, IServiceScope scope, RoleManager<IdentityRole> roleManager)
         {
-            var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
+            //var config = scope.ServiceProvider.GetRequiredService<IConfiguration>(); //Does not work in runtime
 
             var defaultUser = new User
             {
-                UserName = config.GetConnectionString("AdminUsername"),
+                UserName = Environment.GetEnvironmentVariable("defusername"),
                 AddedDate = DateTime.UtcNow,
-                Email = config.GetConnectionString("AdminEmail")
+                Email = Environment.GetEnvironmentVariable("defemail")
             };
 
 
             if (userManager.Users.All(u => u.UserName != defaultUser.UserName))
             {
-                await userManager.CreateAsync(defaultUser, config.GetConnectionString("AdminPassword"));
+                await userManager.CreateAsync(defaultUser, Environment.GetEnvironmentVariable("defpass"));
                 //await roleManager.
             }
 

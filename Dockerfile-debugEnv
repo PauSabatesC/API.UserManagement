@@ -4,6 +4,10 @@ ENV ASPNETCORE_ENVIRONMENT=Development
 ENV DOTNET_USE_POLLING_FILE_WATCHER=true  
 ENV ASPNETCORE_URLS=http://+:80
 
+ENV defusername=admin
+ENV defpass=adminadmin
+ENV defemail=admin@admin.com
+
 WORKDIR /build/
 COPY . .
 RUN dotnet build

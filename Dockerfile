@@ -1,6 +1,6 @@
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1 as build
+
 ARG BUILDCONFIG=Release
-RUN echo $BUILDCONFIG
 ARG VERSION=1.0.0
 
 COPY UserManagement.sln /build/
@@ -34,6 +34,9 @@ FROM build AS publish
 RUN dotnet publish -c Release -o /app
 
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
+ENV defusername=admin
+ENV defpass=adminadmin
+ENV defemail=admin@admin.com
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443

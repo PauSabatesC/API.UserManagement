@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UserManagement.Domain.Entities;
@@ -14,7 +17,7 @@ namespace API.UserManagement.Extensions
 {
     public static class AspnetCoreExtensions
     {
-        public static async Task<IWebHost> CreateDatabase<T>(this IWebHost webHost) where T : DbContext
+        public static async Task<IHost> CreateDatabase<T>(this IHost webHost) where T : DbContext
         {
             using (var scope = webHost.Services.CreateScope())
             {
@@ -38,7 +41,7 @@ namespace API.UserManagement.Extensions
                     }
 
                     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
-                    
+
                     await DatabaseContextSeed.SeedDefaultAdmin(userManager, scope, roleManager);
 
                 }
