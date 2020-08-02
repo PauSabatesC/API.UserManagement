@@ -1,6 +1,6 @@
 # 🙌 OpenUserManager 🙌
 
-## Production ready API server for authentication, authorization, and user management.
+## API server for authentication, authorization, and user management.
 ## 🔨 Easy to integrate with anything, anywhere. Also it's free, with all its features, forever.
 
 ### ✔️ Features:
