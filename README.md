@@ -1,22 +1,9 @@
-# OpenUserManager
+# 🙌 OpenUserManager 🙌
 
-## Production ready API server for Authentication, authorization, and user management easy to integrate with anything, anywhere. Also it's free, with all its features, forever.
+## Production ready API server for authentication, authorization, and user management.
+## 🔨 Easy to integrate with anything, anywhere. Also it's free, with all its features, forever.
 
-### Launch:
-
-- Debug mode with appsettings.development.json environment variables:
-```sh
-run-devEnv.bat/sh
-```
-
-- Production deploy with appsettings.production.json variables:
-```sh
-run-releaseEnv.bat/sh
-```
-Take in mind you should get the production appsettings file not provided in this repository for security.
-Also, you should change the admin default user environment variables in Dockerfile.
-
-### Features:
+### ✔️ Features:
 - Asynchronous and secure authentication and authorization.
 - JWT token.
 - Refresh tokens.
@@ -37,3 +24,18 @@ Also, you should change the admin default user environment variables in Dockerfi
 	- Strong security tests and analysis.
 	- MFA (Multi-factor authentication).
 	- SSO (Single Sign On).
+
+### 🚀 Launch:
+
+- Debug mode with appsettings.development.json environment variables:
+```sh
+run-devEnv.bat/sh
+```
+
+- Production deploy with appsettings.production.json variables:
+```sh
+run-releaseEnv.bat/sh
+```
+Take in mind you should get the production appsettings file not provided in this repository for security.
+Also, you should change the admin default user environment variables in Dockerfile.
+
