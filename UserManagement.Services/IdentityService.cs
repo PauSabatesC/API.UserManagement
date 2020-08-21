@@ -10,9 +10,10 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using UserManagement.Domain.ValueObjects;
 using System.Collections.Generic;
 using UserManagement.Domain.Enums;
+using UserManagement.Services.DTOs.Responses;
+using UserManagement.Services.DTOs.Requests;
 
 namespace UserManagement.Services
 {
@@ -35,26 +36,27 @@ namespace UserManagement.Services
             _refreshTokenRepository = refreshTokenRepository;
         }
 
-        public async Task<AuthenticationResult> LoginAsync(string email, string password)
+        public async Task<AuthenticationResponse> LoginAsync(UserAuthenticationRequest userReq)
         {
-            var user = await _userManager.FindByEmailAsync(email);
+
+            var user = await _userManager.FindByEmailAsync(userReq.Email);
 
             if (user == null)
             {
-                return new AuthenticationResult
+                return new AuthenticationResponse
                 {
                     ErrorMessages = new[] { "User does not exist." },
                     Success = false
                 };
             }
 
-            var userHasValidPassword = await _userManager.CheckPasswordAsync(user, password);
+            var userHasValidPassword = await _userManager.CheckPasswordAsync(user, userReq.Password);
             
-            await _userManager.AddClaimAsync(user, new Claim(ClaimsEnum.Users, "true"));//TODO:DELETE
+            await _userManager.AddClaimAsync(user, new Claim(Claims.Users, "true"));//TODO:DELETE
             
             if (!userHasValidPassword)
             {
-                return new AuthenticationResult
+                return new AuthenticationResponse
                 {
                     ErrorMessages = new[] { "Email/Password are incorrect." },
                     Success = false
@@ -64,32 +66,32 @@ namespace UserManagement.Services
             return await GenerateAuthenticationResultAsync(user);
         }
 
-        public async Task<AuthenticationResult> RegisterAsync(string email, string password)
+        public async Task<AuthenticationResponse> RegisterAsync(UserAuthenticationRequest userReq)
         {
-            var existingUser = await _userManager.FindByEmailAsync(email);
+            var existingUser = await _userManager.FindByEmailAsync(userReq.Email);
 
             if (existingUser != null)
             {
-                return new AuthenticationResult
+                return new AuthenticationResponse
                 {
                     ErrorMessages = new[] { "User with this email already exists." },
                     Success = false
                 };
             }
 
-            var userId = Guid.NewGuid();
             var newUser = new User
             {
-                Id = userId.ToString(),
-                Email = email,
-                UserName = email
+                Id = Guid.NewGuid().ToString(),
+                Email = userReq.Email,
+                UserName = userReq.UserName,
+                LastName = userReq.LastName
             };
 
-            var createdUser = await _userManager.CreateAsync(newUser, password);
+            var createdUser = await _userManager.CreateAsync(newUser, userReq.Password);
 
             if (!createdUser.Succeeded)
             {
-                return new AuthenticationResult
+                return new AuthenticationResponse
                 {
                     ErrorMessages = createdUser.Errors.Select(x => x.Description),
                     Success = false
@@ -99,13 +101,13 @@ namespace UserManagement.Services
             return await GenerateAuthenticationResultAsync(newUser);
         }
 
-        public async Task<AuthenticationResult> RefreshTokenAsync(string token, string refreshToken)
+        public async Task<AuthenticationResponse> RefreshTokenAsync(RefreshTokenRequest refTokenReq)
         {
-            var validatedToken = GetPrincipalFromToken(token);
+            var validatedToken = GetPrincipalFromToken(refTokenReq.Token);
 
             if(validatedToken == null)
             {
-                return new AuthenticationResult
+                return new AuthenticationResponse
                 { 
                     ErrorMessages = new[] { "Invalid token."} 
                 };
@@ -118,36 +120,36 @@ namespace UserManagement.Services
 
             if(expiryDateTimeUtc > DateTime.UtcNow)
             {
-                return new AuthenticationResult { ErrorMessages = new[] { "This token hasn't expired yet" } };
+                return new AuthenticationResponse { ErrorMessages = new[] { "This token hasn't expired yet" } };
             }
 
             var jti = validatedToken.Claims.Single(x => x.Type == JwtRegisteredClaimNames.Jti).Value;
 
-            var storedRefreshToken = await _refreshTokenRepository.ReadRefreshToken(refreshToken);
+            var storedRefreshToken = await _refreshTokenRepository.ReadRefreshToken(refTokenReq.RefreshToken);
 
             if(storedRefreshToken ==null)
             {
-                return new AuthenticationResult { ErrorMessages = new[] { "The refresh token does not exist." } };
+                return new AuthenticationResponse { ErrorMessages = new[] { "The refresh token does not exist." } };
             }
 
             if (DateTime.UtcNow > storedRefreshToken.ExpiryDate)
             {
-                return new AuthenticationResult { ErrorMessages = new[] { "The refresh token has expired." } };
+                return new AuthenticationResponse { ErrorMessages = new[] { "The refresh token has expired." } };
             }
 
             if (storedRefreshToken.Invalidated)
             {
-                return new AuthenticationResult { ErrorMessages = new[] { "The refresh token has been invalidated." } };
+                return new AuthenticationResponse { ErrorMessages = new[] { "The refresh token has been invalidated." } };
             }
 
             if (storedRefreshToken.Used)
             {
-                return new AuthenticationResult { ErrorMessages = new[] { "The refresh token has been used already." } };
+                return new AuthenticationResponse { ErrorMessages = new[] { "The refresh token has been used already." } };
             }
 
             if (storedRefreshToken.JwtId != jti)
             {
-                return new AuthenticationResult { ErrorMessages = new[] { "The refresh token does not match the JWT." } };
+                return new AuthenticationResponse { ErrorMessages = new[] { "The refresh token does not match the JWT." } };
             }
 
             storedRefreshToken.Used = true;
@@ -184,7 +186,7 @@ namespace UserManagement.Services
         }
 
 
-        private async Task<AuthenticationResult> GenerateAuthenticationResultAsync(User user)
+        private async Task<AuthenticationResponse> GenerateAuthenticationResultAsync(User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_jwtSettings.Secret);
@@ -236,7 +238,7 @@ namespace UserManagement.Services
 
             if(!saved)
             {
-                return new AuthenticationResult
+                return new AuthenticationResponse
                 {
                     Success = false,
                     Token = null,
@@ -245,7 +247,7 @@ namespace UserManagement.Services
                 };
             }
 
-            return new AuthenticationResult
+            return new AuthenticationResponse
             {
                 Success = true,
                 Token = tokenHandler.WriteToken(token),

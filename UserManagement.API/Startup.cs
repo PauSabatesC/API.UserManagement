@@ -16,9 +16,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using UserManagement.Domain.Enums;
 using System;
+using UserManagement.API.Authorization;
+using Microsoft.AspNetCore.Authorization;
+using AutoMapper;
 
-namespace API.LoginAndRegister
+namespace UserManagement.API
 {
     public class Startup
     {
@@ -34,11 +38,14 @@ namespace API.LoginAndRegister
         {
             ////CONTROLLERS
             services.AddControllersWithViews();
-            
+
+            ////AUTOMAPPER
+            services.AddAutoMapper(typeof(Startup));
+
             ////SWAGGER
             services.AddSwaggerGen( x => 
             {
-                x.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "API.UserManagement", Version = "v1" });
+                x.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "OpenUserManager API", Version = "v1" });
 
                 var security = new Dictionary<string, IEnumerable<string>>
                 {
@@ -64,7 +71,7 @@ namespace API.LoginAndRegister
 
             });
 
-            ////JWT
+            ////JWT + Authorization
             var jwtSettings = new JwtSettings();
             Configuration.Bind(nameof(jwtSettings), jwtSettings);
             services.AddSingleton(jwtSettings);
@@ -94,7 +101,15 @@ namespace API.LoginAndRegister
                 x.TokenValidationParameters = tokenValidationParameters;
             });
 
-            services.AddAuthorization();
+            services.AddAuthorization(options => 
+            {
+                options.AddPolicy(Policies.MustBeEnterpriseEmail, policy =>
+                {
+                    policy.AddRequirements(new EmailDomainRequirement("email.com"));
+                });
+            });
+
+            services.AddSingleton<IAuthorizationHandler, EmailDomainHandler>();
 
             ////DB
             services.AddDbContext<DataContext>(dbContextOption => dbContextOption.UseSqlServer(Configuration.GetConnectionString("SQLServerDb")));

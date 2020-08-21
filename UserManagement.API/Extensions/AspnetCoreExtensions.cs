@@ -13,7 +13,7 @@ using UserManagement.Domain.Entities;
 using UserManagement.Domain.Enums;
 using UserManagement.Infrastructure.Database;
 
-namespace API.UserManagement.Extensions
+namespace UserManagement.API.Extensions
 {
     public static class AspnetCoreExtensions
     {

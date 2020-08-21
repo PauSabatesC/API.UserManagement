@@ -64,7 +64,7 @@ namespace UserManagement.Services
                 return false;
             }
 
-            var usersClaim = await _userManager.AddClaimAsync(user, new Claim(ClaimsEnum.Users, "true"));
+            var usersClaim = await _userManager.AddClaimAsync(user, new Claim(Claims.Users, "true"));
             
             if(!usersClaim.Succeeded)
             {

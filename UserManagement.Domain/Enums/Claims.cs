@@ -2,7 +2,7 @@ using System;
 
 namespace UserManagement.Domain.Enums
 {
-    public static class ClaimsEnum
+    public static class Claims
     {
         public const string Users = "users.view";
     }

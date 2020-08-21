@@ -9,9 +9,9 @@ RUN:
 -Production like build
 	- docker-compose build
 	- docker-compose up
-	- http://localhost/swagger/index.html
+	- https://localhost/swagger/index.html
 
-
+todos:
 -domain models ar anemic, so they should have all the assert validation logic of the model itself.
 -dtos may be included and they might be in the application service layer, not in the domain layer.
 -la interficie del repository en comptes de passar per parametres Guid passar T ja que en algunes databases no va el guid. https://www.c-sharpcorner.com/article/onion-architecture-in-asp-net-core-mvc/
@@ -19,8 +19,9 @@ RUN:
 -look into token invalidation (i only do validation?)
 -posar els Responses com aqui https://github.com/zkavtaskin/Domain-Driven-Design-Example/blob/master/eCommerce.WebService/Controllers/CartController.cs
 -millorar seguretat de les pass del appsettings i del dockercompose
--nose on posar els try catch i on posar els logs
-
+-on posar els try catch i on posar els logs
+-move startup configure services to each layer.
+-cache invalidation (aqui parlen https://github.com/jasontaylordev/CleanArchitecture/pull/110)
 
 ---- authentication and authorization types:
 
@@ -77,3 +78,12 @@ Exemples: https://fusionauth.io/ o https://auth0.com/
 				ApiRoutes.cs
 	appsettings.json
 
+
+	-----
+	dto to domain object
+	domain object to response contracts
+
+	DTO->service->DomainObject -service->DTO
+	Your service should receive DTOs, map them to business entities and send them to the repository. 
+	It should also retrieve business entities from the repository, map them to DTOs and return the DTOs as reponses.
+	So your business entities never get out from the business layer, only the DTOs do.

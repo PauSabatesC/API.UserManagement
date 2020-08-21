@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace API.UserManagement.Controllers.v1.Contracts
+namespace UserManagement.API.Controllers.v1.Contracts
 {
     public static class ApiRoutes
     {

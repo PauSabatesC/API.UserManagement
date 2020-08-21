@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UserManagement.Domain.Entities;
+using UserManagement.Domain.Enums;
 using UserManagement.Services.Options;
 
 namespace UserManagement.Infrastructure.Database
@@ -30,6 +31,7 @@ namespace UserManagement.Infrastructure.Database
             {
                 await userManager.CreateAsync(defaultUser, Environment.GetEnvironmentVariable("defpass"));
                 //await roleManager.
+                await userManager.AddToRoleAsync(defaultUser, Roles.Admin);
             }
 
         }

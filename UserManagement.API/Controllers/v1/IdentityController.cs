@@ -1,28 +1,41 @@
-﻿using API.UserManagement.Controllers.v1.Contracts;
-using API.UserManagement.Controllers.v1.Contracts.Requests;
-using API.UserManagement.Controllers.v1.Contracts.Responses;
-using UserManagement.Services.Boundaries;
+﻿using UserManagement.Services.Boundaries;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using UserManagement.Services.DTOs.Requests;
+using UserManagement.API.Controllers.v1.Contracts.Requests;
+using UserManagement.API.Controllers.v1.Contracts.Responses;
+using UserManagement.API.Controllers.v1.Contracts;
+using AutoMapper;
 
-namespace API.UserManagement.Controllers.v1
+namespace UserManagement.API.Controllers.v1
 {
     public class IdentityController: Controller
     {
         private readonly IIdentityService _identityService;
+        private readonly IMapper _mapper;
 
-        public IdentityController(IIdentityService identityService)
+        public IdentityController(IIdentityService identityService, IMapper mapper)
         {
             _identityService = identityService;
+            _mapper = mapper;
         }
 
         [HttpPost(ApiRoutes.Identity.Register)]
         public async Task<IActionResult> Register([FromBody] UserRegistrationRequest request)
         {
-            var authResponse = await _identityService.RegisterAsync(request.email, request.password);
+            /*var authResponse = await _identityService.RegisterAsync(
+                new UserAuthenticationRequest 
+                { 
+                    Email = request.email,
+                    Password = request.password
+                });
+            */
+
+            var serviceReq = _mapper.Map<UserAuthenticationRequest>(request);
+            var authResponse = await _identityService.RegisterAsync(serviceReq);
 
             if(!authResponse.Success)
             {
@@ -49,8 +62,8 @@ namespace API.UserManagement.Controllers.v1
                     ErrorMessage = ModelState.Values.SelectMany(x => x.Errors.Select(y => y.ErrorMessage))
                 });
             }
-
-            var authResponse = await _identityService.LoginAsync(request.email, request.password);
+            var serviceReq = _mapper.Map<UserAuthenticationRequest>(request);
+            var authResponse = await _identityService.LoginAsync(serviceReq);
 
             if (!authResponse.Success)
             {
@@ -68,10 +81,10 @@ namespace API.UserManagement.Controllers.v1
         }
 
         [HttpPost(ApiRoutes.Identity.Refresh)]
-        public async Task<IActionResult> Refresh([FromBody] RefreshTokenRequest request)
-        {           
-
-            var authResponse = await _identityService.RefreshTokenAsync(request.Token, request.RefreshToken);
+        public async Task<IActionResult> Refresh([FromBody] Contracts.Requests.RefreshTokenRequest request)
+        {
+            var serviceReq = _mapper.Map<Services.DTOs.Requests.RefreshTokenRequest>(request);
+            var authResponse = await _identityService.RefreshTokenAsync(serviceReq);
 
             if (!authResponse.Success)
             {

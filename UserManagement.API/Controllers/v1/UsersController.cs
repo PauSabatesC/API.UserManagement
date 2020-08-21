@@ -1,17 +1,18 @@
-﻿using API.UserManagement.Controllers.v1.Contracts;
-using API.UserManagement.Controllers.v1.Contracts.Requests;
-using API.UserManagement.Controllers.v1.Contracts.Responses;
-using UserManagement.Domain.Entities;
+﻿using UserManagement.Domain.Entities;
 using UserManagement.Services.Boundaries;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using UserManagement.Common.Extensions;
+using UserManagement.Domain.Enums;
+using UserManagement.API.Controllers.v1.Contracts.Requests;
+using UserManagement.API.Controllers.v1.Contracts;
+using UserManagement.API.Controllers.v1.Contracts.Responses;
 
-namespace API.UserManagement.Controllers.v1
+namespace UserManagement.API.Controllers.v1
 {
-    [Authorize(AuthenticationSchemes =JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class UsersController : Controller
     {
         private readonly IUsersService _usersService;
@@ -23,6 +24,7 @@ namespace API.UserManagement.Controllers.v1
 
 
         [HttpGet(ApiRoutes.Users.GetAll)]
+        [Authorize(Policy = Policies.MustBeEnterpriseEmail)]
         public async Task<IActionResult> GetAll()
         {
             var users = await _usersService.GetUsers();
@@ -30,6 +32,7 @@ namespace API.UserManagement.Controllers.v1
         }
 
         [HttpGet(ApiRoutes.Users.Get)]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> Get([FromRoute] string userId)
         {
             var user = await _usersService.GetUserById(userId);
@@ -38,6 +41,7 @@ namespace API.UserManagement.Controllers.v1
         }
 
         [HttpPost(ApiRoutes.Users.Create)]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> Create([FromBody] CreateUserRequest user)
         {
             User aux_user = new User { UserName = user.Name};
@@ -53,6 +57,7 @@ namespace API.UserManagement.Controllers.v1
         }
 
         [HttpPut(ApiRoutes.Users.Update)]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> Update([FromRoute] string userId, [FromBody] UpdateUserRequest request)
         {
             var user = await _usersService.GetUserById(userId);
@@ -64,6 +69,7 @@ namespace API.UserManagement.Controllers.v1
         }
 
         [HttpDelete(ApiRoutes.Users.Delete)]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> Delete([FromRoute] string userId)
         {
             var deleted = await _usersService.DeleteUser(userId);

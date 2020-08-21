@@ -1,14 +1,13 @@
-﻿using UserManagement.Domain.RepositoryInterfaces;
-using UserManagement.Domain.Entities;
-using System.Threading.Tasks;
-using UserManagement.Domain.ValueObjects;
+﻿using System.Threading.Tasks;
+using UserManagement.Services.DTOs.Requests;
+using UserManagement.Services.DTOs.Responses;
 
 namespace UserManagement.Services.Boundaries
 {
     public interface IIdentityService
     {
-        Task<AuthenticationResult> RegisterAsync(string email, string password);
-        Task<AuthenticationResult> LoginAsync(string email, string password);
-        Task<AuthenticationResult> RefreshTokenAsync(string token, string refreshToken);
+        Task<AuthenticationResponse> RegisterAsync(UserAuthenticationRequest user);
+        Task<AuthenticationResponse> LoginAsync(UserAuthenticationRequest user);
+        Task<AuthenticationResponse> RefreshTokenAsync(RefreshTokenRequest refreshToken);
     }
 }
