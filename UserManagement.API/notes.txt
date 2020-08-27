@@ -12,8 +12,6 @@ RUN:
 	- https://localhost/swagger/index.html
 
 todos:
--domain models ar anemic, so they should have all the assert validation logic of the model itself.
--dtos may be included and they might be in the application service layer, not in the domain layer.
 -la interficie del repository en comptes de passar per parametres Guid passar T ja que en algunes databases no va el guid. https://www.c-sharpcorner.com/article/onion-architecture-in-asp-net-core-mvc/
 -millorar el versioning
 -look into token invalidation (i only do validation?)
@@ -22,6 +20,7 @@ todos:
 -on posar els try catch i on posar els logs
 -move startup configure services to each layer.
 -cache invalidation (aqui parlen https://github.com/jasontaylordev/CleanArchitecture/pull/110)
+-la service layer hauria de tenir fluent validation també.
 
 ---- authentication and authorization types:
 
@@ -44,46 +43,3 @@ todos:
 
 .oauth (per donar permissos a una third app.)
 
-
-
-
-----posar al readme----
-
-
-Exemples: https://fusionauth.io/ o https://auth0.com/
-
-
-
-
----Migration to Onion + DDD---
-
--UserManagement.Domain
-	-Entities
-	-Repository Interfaces
--UserManagement.Services
-	-DTOs
-	-Options
-	-Extensions
-	-Boundaries
--UserManagement.Infrastructure
-	-Database
-		-SQLServer
-			-Migrations
--UserManagement.API
-	-Controllers
-		-v1
-			-Contracts
-				-Requests
-				-Responses
-				ApiRoutes.cs
-	appsettings.json
-
-
-	-----
-	dto to domain object
-	domain object to response contracts
-
-	DTO->service->DomainObject -service->DTO
-	Your service should receive DTOs, map them to business entities and send them to the repository. 
-	It should also retrieve business entities from the repository, map them to DTOs and return the DTOs as reponses.
-	So your business entities never get out from the business layer, only the DTOs do.

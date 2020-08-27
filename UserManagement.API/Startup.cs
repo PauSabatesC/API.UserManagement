@@ -18,9 +18,11 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using UserManagement.Domain.Enums;
 using System;
-using UserManagement.API.Authorization;
+using UserManagement.API.FiltersMiddleware.AuthorizationMiddlewares.Policies;
 using Microsoft.AspNetCore.Authorization;
 using AutoMapper;
+using FluentValidation.AspNetCore;
+using UserManagement.API.FiltersMiddleware.AuthorizationMiddlewares.RequestsValidators;
 
 namespace UserManagement.API
 {
@@ -37,7 +39,11 @@ namespace UserManagement.API
         public void ConfigureServices(IServiceCollection services)
         {
             ////CONTROLLERS
-            services.AddControllersWithViews();
+            services.AddControllers(options =>
+            {
+                options.Filters.Add<RequestValidationFilter>();
+            })
+            .AddFluentValidation(configuration => configuration.RegisterValidatorsFromAssemblyContaining<Startup>());
 
             ////AUTOMAPPER
             services.AddAutoMapper(typeof(Startup));
@@ -86,7 +92,6 @@ namespace UserManagement.API
                 RequireExpirationTime = false
 
             };
-
             services.AddSingleton(tokenValidationParameters);
 
             services.AddAuthentication(x =>
@@ -101,7 +106,8 @@ namespace UserManagement.API
                 x.TokenValidationParameters = tokenValidationParameters;
             });
 
-            services.AddAuthorization(options => 
+
+            services.AddAuthorization(options =>
             {
                 options.AddPolicy(Policies.MustBeEnterpriseEmail, policy =>
                 {

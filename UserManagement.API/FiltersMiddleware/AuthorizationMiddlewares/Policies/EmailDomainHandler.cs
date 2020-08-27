@@ -5,7 +5,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace UserManagement.API.Authorization
+namespace UserManagement.API.FiltersMiddleware.AuthorizationMiddlewares.Policies
 {
     public class EmailDomainHandler : AuthorizationHandler<EmailDomainRequirement>
     {

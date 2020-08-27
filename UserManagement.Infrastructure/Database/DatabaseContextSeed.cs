@@ -21,15 +21,18 @@ namespace UserManagement.Infrastructure.Database
 
             var defaultUser = new User
             {
-                UserName = Environment.GetEnvironmentVariable("defusername"),
+                UserName = Environment.GetEnvironmentVariable("defusername"), //to use with docker ENV
+                Email = Environment.GetEnvironmentVariable("defemail"), //to use with docker ENV
                 AddedDate = DateTime.UtcNow,
-                Email = Environment.GetEnvironmentVariable("defemail")
             };
 
+            if (defaultUser.UserName == null) defaultUser.UserName = "admin";
+            if (defaultUser.Email == null) defaultUser.Email = "admin@admin.com";
 
             if (userManager.Users.All(u => u.UserName != defaultUser.UserName))
             {
-                await userManager.CreateAsync(defaultUser, Environment.GetEnvironmentVariable("defpass"));
+                var passwd = Environment.GetEnvironmentVariable("defpass") == null ? "adminadmin" : Environment.GetEnvironmentVariable("defpass");
+                await userManager.CreateAsync(defaultUser, passwd);
                 //await roleManager.
                 await userManager.AddToRoleAsync(defaultUser, Roles.Admin);
             }

@@ -4,15 +4,16 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using UserManagement.Common.Extensions;
+using UserManagement.API.Extensions;
 using UserManagement.Domain.Enums;
 using UserManagement.API.Controllers.v1.Contracts.Requests;
 using UserManagement.API.Controllers.v1.Contracts;
 using UserManagement.API.Controllers.v1.Contracts.Responses;
+using UserManagement.API.FiltersMiddleware.AuthenticationMiddlewares;
 
 namespace UserManagement.API.Controllers.v1
 {
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    //[ApiKeyAuth]
     public class UsersController : Controller
     {
         private readonly IUsersService _usersService;
@@ -24,7 +25,7 @@ namespace UserManagement.API.Controllers.v1
 
 
         [HttpGet(ApiRoutes.Users.GetAll)]
-        [Authorize(Policy = Policies.MustBeEnterpriseEmail)]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> GetAll()
         {
             var users = await _usersService.GetUsers();
@@ -32,7 +33,9 @@ namespace UserManagement.API.Controllers.v1
         }
 
         [HttpGet(ApiRoutes.Users.Get)]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme), ApiKeyAuth]
         [Authorize(Roles = Roles.Admin)]
+        [Authorize(Policy = Policies.MustBeEnterpriseEmail)]
         public async Task<IActionResult> Get([FromRoute] string userId)
         {
             var user = await _usersService.GetUserById(userId);
@@ -41,7 +44,9 @@ namespace UserManagement.API.Controllers.v1
         }
 
         [HttpPost(ApiRoutes.Users.Create)]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Authorize(Roles = Roles.Admin)]
+        [Authorize(Policy = Policies.MustBeEnterpriseEmail)]
         public async Task<IActionResult> Create([FromBody] CreateUserRequest user)
         {
             User aux_user = new User { UserName = user.Name};
@@ -57,7 +62,9 @@ namespace UserManagement.API.Controllers.v1
         }
 
         [HttpPut(ApiRoutes.Users.Update)]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Authorize(Roles = Roles.Admin)]
+        [Authorize(Policy = Policies.MustBeEnterpriseEmail)]
         public async Task<IActionResult> Update([FromRoute] string userId, [FromBody] UpdateUserRequest request)
         {
             var user = await _usersService.GetUserById(userId);
@@ -69,7 +76,9 @@ namespace UserManagement.API.Controllers.v1
         }
 
         [HttpDelete(ApiRoutes.Users.Delete)]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Authorize(Roles = Roles.Admin)]
+        [Authorize(Policy = Policies.MustBeEnterpriseEmail)]
         public async Task<IActionResult> Delete([FromRoute] string userId)
         {
             var deleted = await _usersService.DeleteUser(userId);

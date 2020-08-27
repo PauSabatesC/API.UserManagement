@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace UserManagement.API.Authorization
+namespace UserManagement.API.FiltersMiddleware.AuthorizationMiddlewares.Policies
 {
     public class EmailDomainRequirement : IAuthorizationRequirement
     {

@@ -10,15 +10,15 @@
 - Claims and roles.
 - Admin endpoints for management.
 - Third party oauth services(twitter, google).
-- SDK for developers.
 - Onion architecture, easy to maintain/add new features.
 - Swagger documentation.
 - Requests validation.
-- Db tables to log users metadata.
-- Response caching.
+- Users metadata logging.
 - Health checks.
 - Versioned API.
+
 - (Future features)
+	- SDK for developers.
 	- AWS IAM authentication
 	- Easier cloud deploy using Terraform and environment files.
 	- Strong security tests and analysis.
