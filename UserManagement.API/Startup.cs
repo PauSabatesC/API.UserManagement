@@ -23,6 +23,10 @@ using Microsoft.AspNetCore.Authorization;
 using AutoMapper;
 using FluentValidation.AspNetCore;
 using UserManagement.API.FiltersMiddleware.AuthorizationMiddlewares.RequestsValidators;
+using System.Reflection;
+using UserManagement.API.Services;
+using UserManagement.Services.DTOs.Requests;
+using Microsoft.AspNetCore.Http;
 
 namespace UserManagement.API
 {
@@ -46,7 +50,8 @@ namespace UserManagement.API
             .AddFluentValidation(configuration => configuration.RegisterValidatorsFromAssemblyContaining<Startup>());
 
             ////AUTOMAPPER
-            services.AddAutoMapper(typeof(Startup));
+            Type[] profileAssemblyTypes = new[] {typeof(Startup), typeof(UserManagement.Services.IdentityService)};
+            services.AddAutoMapper(profileAssemblyTypes);
 
             ////SWAGGER
             services.AddSwaggerGen( x => 
@@ -135,7 +140,13 @@ namespace UserManagement.API
             services.AddScoped<IIdentityService, IdentityService>();
             services.AddTransient<IUsersAdminManagementRepository, UsersAdminManagementRepository>();        
             services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
-
+            services.AddScoped<IUriService<IPagination>>(provider =>
+            {
+                var accessor = provider.GetRequiredService<IHttpContextAccessor>();
+                var request = accessor.HttpContext.Request;
+                var absolutUri = string.Concat(request.Scheme, "://", request.Host.ToUriComponent(), "/");
+                return new UriService<IPagination>(absolutUri);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

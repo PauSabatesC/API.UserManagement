@@ -43,7 +43,7 @@ namespace UserManagement.API.Extensions
                     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
 
                     await DatabaseContextSeed.SeedDefaultAdmin(userManager, scope, roleManager);
-
+                    
                 }
                 catch
                 {

@@ -37,11 +37,13 @@ namespace UserManagement.API.Controllers.v1
                 });
             }
 
-            return Ok(new AuthSuccessResponse
-            {
-                Token = authResponse.Token,
-                RefreshToken = authResponse.RefreshToken
-            });
+            return Ok(new ApiResponse<AuthSuccessResponse>( 
+                new AuthSuccessResponse
+                {
+                    Token = authResponse.Token,
+                    RefreshToken = authResponse.RefreshToken
+                })
+            );
         }
 
         [HttpPost(ApiRoutes.Identity.Login)]
@@ -65,17 +67,19 @@ namespace UserManagement.API.Controllers.v1
                 });
             }
 
-            return Ok(new AuthSuccessResponse
-            {
-                Token = authResponse.Token,
-                RefreshToken = authResponse.RefreshToken
-            });
+            return Ok(new ApiResponse<AuthSuccessResponse>(
+                new AuthSuccessResponse
+                {
+                    Token = authResponse.Token,
+                    RefreshToken = authResponse.RefreshToken
+                })
+            );
         }
 
         [HttpPost(ApiRoutes.Identity.Refresh)]
         public async Task<IActionResult> Refresh([FromBody] Contracts.Requests.RefreshTokenRequest request)
         {
-            var serviceReq = _mapper.Map<Services.DTOs.Requests.RefreshTokenRequest>(request);
+            var serviceReq = _mapper.Map<UserManagement.Services.DTOs.Requests.RefreshTokenRequest>(request);
             var authResponse = await _identityService.RefreshTokenAsync(serviceReq);
 
             if (!authResponse.Success)
@@ -86,11 +90,13 @@ namespace UserManagement.API.Controllers.v1
                 });
             }
 
-            return Ok(new AuthSuccessResponse
-            {
-                Token = authResponse.Token,
-                RefreshToken = authResponse.RefreshToken
-            });
+            return Ok(new ApiResponse<AuthSuccessResponse>(
+                new AuthSuccessResponse
+                {
+                    Token = authResponse.Token,
+                    RefreshToken = authResponse.RefreshToken
+                })
+            );
 
         }
 

@@ -10,6 +10,14 @@ using UserManagement.API.Controllers.v1.Contracts.Requests;
 using UserManagement.API.Controllers.v1.Contracts;
 using UserManagement.API.Controllers.v1.Contracts.Responses;
 using UserManagement.API.FiltersMiddleware.AuthenticationMiddlewares;
+using UserManagement.Services.DTOs.Responses;
+using System.Collections.Generic;
+using UserManagement.API.Controllers.v1.Contracts.Requests.Queries;
+using AutoMapper;
+using UserManagement.Services.DTOs.Requests;
+using UserManagement.API.Services;
+using System.Linq;
+using UserManagement.API.Common.Utils;
 
 namespace UserManagement.API.Controllers.v1
 {
@@ -17,19 +25,31 @@ namespace UserManagement.API.Controllers.v1
     public class UsersController : Controller
     {
         private readonly IUsersService _usersService;
+        private readonly IMapper _mapper;
+        private readonly IUriService<IPagination> _uriService;
 
-        public UsersController(IUsersService usersService)
+        public UsersController(IUsersService usersService, IMapper mapper, IUriService<IPagination> uriService)
         {
+            _mapper = mapper;
             _usersService = usersService;
+            _uriService = uriService;
         }
 
 
         [HttpGet(ApiRoutes.Users.GetAll)]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> GetAll()
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> GetAll([FromQuery]PaginationQuery paginationQuery)
         {
-            var users = await _usersService.GetUsers();
-            return Ok(users);
+            var paginationReq = _mapper.Map<PaginationRequest>(paginationQuery);
+            var users = await _usersService.GetUsers(paginationReq);
+
+            if(paginationReq == null || paginationReq.PageNumber < 1 || paginationReq.PageSize < 1)
+            {
+                return Ok(new PagedResponse<UserResponse>(users));
+            }
+
+            var paginatedResponse = PaginationUtils.BuildPaginatedResponse<UserResponse>(_uriService,paginationQuery, users);
+            return Ok(paginatedResponse);
         }
 
         [HttpGet(ApiRoutes.Users.Get)]
@@ -54,9 +74,7 @@ namespace UserManagement.API.Controllers.v1
 
             var userCreated = await _usersService.CreateUser(aux_user, adminUserId);
 
-            var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
-            var locationUri = baseUrl + "/" + ApiRoutes.Users.Get.Replace("{userId}", userCreated.Id.ToString());
-
+            var locationUri = _uriService.GetUserUri(userCreated.Id.ToString());
             var response = new PostResponse { Id = userCreated.Id, UserName = userCreated.UserName };
             return Created(locationUri, response);
         }

@@ -8,6 +8,9 @@ using UserManagement.Services.Boundaries;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using UserManagement.Domain.Enums;
+using AutoMapper;
+using UserManagement.Services.DTOs.Responses;
+using UserManagement.Services.DTOs.Requests;
 
 namespace UserManagement.Services
 {
@@ -15,11 +18,13 @@ namespace UserManagement.Services
     {
         private readonly IUsersAdminManagementRepository _usersRepository;
         private readonly UserManager<User> _userManager;
+        private readonly IMapper _mapper;
 
-        public UsersService(IUsersAdminManagementRepository usersRepository, UserManager<User> userManager)
+        public UsersService(IUsersAdminManagementRepository usersRepository, UserManager<User> userManager, IMapper mapper)
         {
             _usersRepository = usersRepository;
             _userManager = userManager;
+            _mapper = mapper;
         }
 
         public async Task<User> GetUserById(string id)
@@ -27,9 +32,18 @@ namespace UserManagement.Services
             return await _usersRepository.ReadUserAsync(id);
         }
 
-        public async Task<IEnumerable<User>> GetUsers()
+        public async Task<IEnumerable<UserResponse>> GetUsers(PaginationRequest paginationReq = null)
         {
-            return await _usersRepository.ReadUsersAsync();
+            if(paginationReq == null)
+            {
+                return (await _usersRepository.ReadUsersAsync()).Select(user => _mapper.Map<UserResponse>(user));
+            }
+
+            var skip = (paginationReq.PageNumber - 1) * paginationReq.PageSize;
+            return (await _usersRepository.ReadUsersAsync())
+                    .Select(user => _mapper.Map<UserResponse>(user))
+                    .Skip(skip)
+                    .Take(paginationReq.PageSize);
         }
 
         public async Task<bool> UpdateUser(User user)

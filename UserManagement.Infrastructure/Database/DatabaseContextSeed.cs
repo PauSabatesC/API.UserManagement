@@ -37,6 +37,10 @@ namespace UserManagement.Infrastructure.Database
                 await userManager.AddToRoleAsync(defaultUser, Roles.Admin);
             }
 
+            //just seeding for pagination testing purposes
+            for (int i = 0; i < 12; i++) 
+                await userManager.CreateAsync(new User { UserName = string.Concat("user", i), Email = string.Concat("user", i, "@user.com") }, "useruser");
+
         }
     }
 }
