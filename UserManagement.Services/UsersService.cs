@@ -32,18 +32,26 @@ namespace UserManagement.Services
             return await _usersRepository.ReadUserAsync(id);
         }
 
-        public async Task<IEnumerable<UserResponse>> GetUsers(PaginationRequest paginationReq = null)
+        public async Task<IEnumerable<UserResponse>> GetUsers(PaginationRequest paginationReq = null, GetAllPostsRequestFilter usersFilter = null)
         {
-            if(paginationReq == null)
+            var queryable = await _usersRepository.ReadUsersAsync();
+
+            if (!string.IsNullOrEmpty(usersFilter.UserId))
             {
-                return (await _usersRepository.ReadUsersAsync()).Select(user => _mapper.Map<UserResponse>(user));
+                queryable = queryable.Where(x => x.Id == usersFilter.UserId);
             }
 
+            if (paginationReq == null)
+            {
+                return queryable.Select(user => _mapper.Map<UserResponse>(user));
+            }
+
+
+
             var skip = (paginationReq.PageNumber - 1) * paginationReq.PageSize;
-            return (await _usersRepository.ReadUsersAsync())
-                    .Select(user => _mapper.Map<UserResponse>(user))
-                    .Skip(skip)
-                    .Take(paginationReq.PageSize);
+            return queryable.Select(user => _mapper.Map<UserResponse>(user))
+                            .Skip(skip)
+                            .Take(paginationReq.PageSize);
         }
 
         public async Task<bool> UpdateUser(User user)

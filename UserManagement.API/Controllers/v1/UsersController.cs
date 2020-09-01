@@ -35,13 +35,15 @@ namespace UserManagement.API.Controllers.v1
             _uriService = uriService;
         }
 
-
+        
         [HttpGet(ApiRoutes.Users.GetAll)]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> GetAll([FromQuery]PaginationQuery paginationQuery)
+        public async Task<IActionResult> GetAll([FromQuery]GetAllUsersQuery userFilterQuery, [FromQuery]PaginationQuery paginationQuery)
         {
             var paginationReq = _mapper.Map<PaginationRequest>(paginationQuery);
-            var users = await _usersService.GetUsers(paginationReq);
+            var userFilter = _mapper.Map<GetAllPostsRequestFilter>(userFilterQuery);
+
+            var users = await _usersService.GetUsers(paginationReq, userFilter);
 
             if(paginationReq == null || paginationReq.PageNumber < 1 || paginationReq.PageSize < 1)
             {

@@ -17,6 +17,7 @@ namespace UserManagement.API.MappingProfiles
             CreateMap<UpdateUserRequest, UserAuthenticationRequest>();
             CreateMap<Controllers.v1.Contracts.Requests.RefreshTokenRequest, UserManagement.Services.DTOs.Requests.RefreshTokenRequest>();
             CreateMap<PaginationQuery, PaginationRequest>();
+            CreateMap<GetAllUsersQuery, GetAllPostsRequestFilter>();
         }
     }
 }

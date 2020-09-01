@@ -21,6 +21,7 @@ todos:
 -move startup configure services to each layer.
 -cache invalidation (aqui parlen https://github.com/jasontaylordev/CleanArchitecture/pull/110)
 -la service layer hauria de tenir fluent validation també.
+-transactions(rollbacks) in EF.
 
 ---- authentication and authorization types:
 
