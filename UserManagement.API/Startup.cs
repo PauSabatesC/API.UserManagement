@@ -27,6 +27,10 @@ using System.Reflection;
 using UserManagement.API.Services;
 using UserManagement.Services.DTOs.Requests;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using UserManagement.API.Controllers.HealthChecks;
+using System.Linq;
+using Newtonsoft.Json;
 
 namespace UserManagement.API
 {
@@ -135,6 +139,11 @@ namespace UserManagement.API
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<DataContext>();
 
+            ////HEALTH CHECKS
+            services.AddHealthChecks()
+                .AddDbContextCheck<DataContext>();
+
+
             ////OTHER SERVICES DI
             services.AddScoped<IUsersService,UsersService>();
             services.AddScoped<IIdentityService, IdentityService>();
@@ -171,6 +180,29 @@ namespace UserManagement.API
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            app.UseHealthChecks("/health", new HealthCheckOptions
+            {
+                ResponseWriter = async (context, report) =>
+                {
+                    context.Response.ContentType = "application/json";
+
+                    var response = new HealthCheckResponse
+                    {
+                        Status = report.Status.ToString(),
+                        Checks = report.Entries.Select(x => new HealthCheck
+                        {
+                            Component = x.Key,
+                            Status = x.Value.Status.ToString(),
+                            Description = x.Value.Description
+
+                        }),
+                        Duration = report.TotalDuration
+                    };
+
+                    await context.Response.WriteAsync(JsonConvert.SerializeObject(response));
+                }
+            });
 
             //Swagger middleware binding
             var swaggerOptions = new SwaggerOptions();
