@@ -16,19 +16,19 @@ todos:
 -millorar el versioning
 -look into token invalidation (i only do validation?)
 -posar els Responses com aqui https://github.com/zkavtaskin/Domain-Driven-Design-Example/blob/master/eCommerce.WebService/Controllers/CartController.cs
--millorar seguretat de les pass del appsettings i del dockercompose
 -on posar els try catch i on posar els logs
 -move startup configure services to each layer.
 -cache invalidation (aqui parlen https://github.com/jasontaylordev/CleanArchitecture/pull/110)
 -la service layer hauria de tenir fluent validation també.
 -transactions(rollbacks) in EF.
+-integration/unit testing
 
 ---- authentication and authorization types:
 
 .api key (per utilitzar rollo altres developers)
 	- no es util per usuaris 
 
-.https token (quan login es genera un token que es guarda en database i a les cookies)
+.session token (quan login es genera un token que es guarda en database i a les cookies)
 	- consulta cada cop a database(amb redis es pot millorar temps. es mes utilitzat per sessions rollo carrito)
 	- entrada a db per cada user
 	. database compartida si varies instancies del servei
