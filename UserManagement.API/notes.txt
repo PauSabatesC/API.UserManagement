@@ -13,7 +13,6 @@ RUN:
 
 todos:
 -la interficie del repository en comptes de passar per parametres Guid passar T ja que en algunes databases no va el guid. https://www.c-sharpcorner.com/article/onion-architecture-in-asp-net-core-mvc/
--millorar el versioning
 -look into token invalidation (i only do validation?)
 -posar els Responses com aqui https://github.com/zkavtaskin/Domain-Driven-Design-Example/blob/master/eCommerce.WebService/Controllers/CartController.cs
 -on posar els try catch i on posar els logs
@@ -44,3 +43,22 @@ todos:
 
 .oauth (per donar permissos a una third app.)
 
+
+
+---- middlewares (també anomenats filters a vegades ja que poden filtrar si algo entra a un controller o no al ser steps que s'executen abans)
+
+Estan definits en la pipiline de startup IApplicationBuilder en el method configure
+	-aspnet attribute middleware for jwt authentication
+	-aspnet attribute middleware for authorization (claim/roles)
+Pots crear middleware personalitzat heredant de IAsyncActionFilter i Attribute
+El flow es que s'executa abans del controller, li dius next() al delegate i s'executa al controller i llavors tornaria al middleware i executaria el que
+hi hagués després del next().
+	- per exemple per la api key
+	- també a les requests validations (on el middleware, el que hereda de IAsyncActionFilter, es el que fa model.valid de un context. Aquest context son els
+								diferents validators amb els rulefor, que funciona ja que hereden de AbstractValidator<ModelAValidar>, és a dir que
+								no s'executen per Attribute sino perque la query de la request esta associada a un AbstractValidator)
+	- per fer la verificacio de la policy de enterprise email també es fa pero en aquest cas com que el atribut es: [Authorize(Policy = Policies.MustBeEnterpriseEmail)]
+		doncs no hereda de IAsyncActionFilter sino de AuthorizationHandler.
+
+Pero els resource filters no es un middleware, sino simplement es un parametre que afageixes a la query per dir que de la consulta nomes vols obtenir
+aquell parametre (per exemple de users fas la query només de email) es com dir el select de la sql query.

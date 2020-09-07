@@ -23,16 +23,13 @@ using Microsoft.AspNetCore.Authorization;
 using AutoMapper;
 using FluentValidation.AspNetCore;
 using UserManagement.API.FiltersMiddleware.AuthorizationMiddlewares.RequestsValidators;
-using System.Reflection;
 using UserManagement.API.Services;
 using UserManagement.Services.DTOs.Requests;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using UserManagement.API.Controllers.HealthChecks;
-using System.Linq;
-using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.Extensions.Logging;
+using UserManagement.API.Extensions;
 
 namespace UserManagement.API
 {
@@ -48,6 +45,9 @@ namespace UserManagement.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.AddLogging();
+
             ////CONTROLLERS
             services.AddControllers(options =>
             {
@@ -170,7 +170,7 @@ namespace UserManagement.API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
 
             var builder = new ConfigurationBuilder()
@@ -187,46 +187,22 @@ namespace UserManagement.API
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                //app.UseExceptionHandler("/Home/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
-            app.UseHealthChecks("/health", new HealthCheckOptions
-            {
-                ResponseWriter = async (context, report) =>
-                {
-                    context.Response.ContentType = "application/json";
 
-                    var response = new HealthCheckResponse
-                    {
-                        Status = report.Status.ToString(),
-                        Checks = report.Entries.Select(x => new HealthCheck
-                        {
-                            Component = x.Key,
-                            Status = x.Value.Status.ToString(),
-                            Description = x.Value.Description
-
-                        }),
-                        Duration = report.TotalDuration
-                    };
-
-                    await context.Response.WriteAsync(JsonConvert.SerializeObject(response));
-                }
-            });
+            app.HealthChecks();
 
             //Swagger middleware binding
-            var swaggerOptions = new SwaggerOptions();
-            Configuration.GetSection(nameof(SwaggerOptions)).Bind(swaggerOptions);
-            app.UseSwagger(option => { option.RouteTemplate = swaggerOptions.JsonRoute; });
-            app.UseSwaggerUI(option => 
-            { 
-                option.SwaggerEndpoint(swaggerOptions.UIEndpoint, swaggerOptions.Description); 
-            
-            });
+            app.SwaggerMiddlewareBinding(Configuration);
 
+            //Global error handling
+            app.ConfigureExceptionHandler(logger);
 
             app.UseHttpsRedirection();
+
             app.UseStaticFiles();
 
             app.UseAuthentication();
