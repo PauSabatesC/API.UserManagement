@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using UserManagement.API.Controllers;
 using UserManagement.API.Controllers.v1.Contracts;
 using UserManagement.Services.Boundaries;
 using UserManagement.Services.DTOs.Requests;

@@ -10,7 +10,7 @@ using UserManagement.API.Controllers.v1.Contracts.Responses;
 using UserManagement.API.Controllers.v1.Contracts;
 using AutoMapper;
 
-namespace UserManagement.API.Controllers.v1
+namespace UserManagement.API.Controllers
 {
     public class IdentityController: Controller
     {
@@ -77,7 +77,7 @@ namespace UserManagement.API.Controllers.v1
         }
 
         [HttpPost(ApiRoutes.Identity.Refresh)]
-        public async Task<IActionResult> Refresh([FromBody] Contracts.Requests.RefreshTokenRequest request)
+        public async Task<IActionResult> Refresh([FromBody] v1.Contracts.Requests.RefreshTokenRequest request)
         {
             var serviceReq = _mapper.Map<UserManagement.Services.DTOs.Requests.RefreshTokenRequest>(request);
             var authResponse = await _identityService.RefreshTokenAsync(serviceReq);

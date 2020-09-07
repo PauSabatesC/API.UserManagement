@@ -19,8 +19,10 @@ using UserManagement.API.Services;
 using System.Linq;
 using UserManagement.API.Common.Utils;
 
-namespace UserManagement.API.Controllers.v1
+namespace UserManagement.API.Controllers
 {
+    [ApiController]
+    [ApiVersion("1.0")]
     //[ApiKeyAuth]
     public class UsersController : Controller
     {
@@ -35,7 +37,8 @@ namespace UserManagement.API.Controllers.v1
             _uriService = uriService;
         }
 
-        
+        //[MapToApiVersion("1.0")]
+        //[ApiVersion("2.0", Deprecated = true)]
         [HttpGet(ApiRoutes.Users.GetAll)]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> GetAll([FromQuery]GetAllUsersQuery userFilterQuery, [FromQuery]PaginationQuery paginationQuery)

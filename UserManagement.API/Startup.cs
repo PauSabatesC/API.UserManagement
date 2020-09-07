@@ -31,6 +31,8 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using UserManagement.API.Controllers.HealthChecks;
 using System.Linq;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Versioning;
 
 namespace UserManagement.API
 {
@@ -143,6 +145,14 @@ namespace UserManagement.API
             services.AddHealthChecks()
                 .AddDbContextCheck<DataContext>();
 
+            ////VERSIONING
+            services.AddApiVersioning(cnfg =>
+            {
+                cnfg.DefaultApiVersion = new ApiVersion(1, 0);
+                cnfg.AssumeDefaultVersionWhenUnspecified = true;
+                cnfg.ReportApiVersions = true;
+                cnfg.ApiVersionReader = new HeaderApiVersionReader("api-version");
+            });
 
             ////OTHER SERVICES DI
             services.AddScoped<IUsersService,UsersService>();
@@ -156,6 +166,7 @@ namespace UserManagement.API
                 var absolutUri = string.Concat(request.Scheme, "://", request.Host.ToUriComponent(), "/");
                 return new UriService<IPagination>(absolutUri);
             });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -208,7 +219,11 @@ namespace UserManagement.API
             var swaggerOptions = new SwaggerOptions();
             Configuration.GetSection(nameof(SwaggerOptions)).Bind(swaggerOptions);
             app.UseSwagger(option => { option.RouteTemplate = swaggerOptions.JsonRoute; });
-            app.UseSwaggerUI(option => { option.SwaggerEndpoint(swaggerOptions.UIEndpoint, swaggerOptions.Description); });
+            app.UseSwaggerUI(option => 
+            { 
+                option.SwaggerEndpoint(swaggerOptions.UIEndpoint, swaggerOptions.Description); 
+            
+            });
 
 
             app.UseHttpsRedirection();
